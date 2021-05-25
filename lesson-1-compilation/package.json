@@ -1,0 +1,14 @@
+{
+  "name": "lesson-1-compilation",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf lib", 
+    "build": "yarn clean && tsc", 
+    "start": "node lib/index.js"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "lesson-2-basic-types",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf lib", 
+    "build": "yarn clean && tsc", 
+    "start": "node lib/index.js",
+
+    "exercise1": "yarn build && node lib/index1.js"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  }
+}
