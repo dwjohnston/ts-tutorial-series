@@ -75,7 +75,7 @@ Change `lib` in `tsconfig.json` to `ES2019`. Observe that the error goes away. Y
 
 Change `declaration` to `true` in `tsconfig.json`. 
 
-Run `yarn build:1`. 
+Run `yarn build:2`. 
 
 Observe that an `index2.d.ts` file has been created in the `lib` folder. 
 
