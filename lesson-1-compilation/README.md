@@ -8,7 +8,7 @@ TypeScript is a (pre) language.
 
 ie. TypeScript isn't a language that runs by itself. It compiles down to JavaScript, and it is the JavaScript that runs. 
 
-Exceptions: 
+Exceptions (kinda): 
 
 - ts-node
 - webpack dev server with TS loaders

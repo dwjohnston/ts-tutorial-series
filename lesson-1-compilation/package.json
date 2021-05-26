@@ -8,7 +8,6 @@
     "build": "yarn clean && tsc",
     "build:1": "yarn clean && tsc -p tsconfig.1.json", 
     "start:1": "node lib/index1.js",
-
     "build:2": "yarn clean && tsc  -p tsconfig.2.json", 
     "start:2": "node lib/index2.js"
   },

@@ -68,9 +68,6 @@ function usesStringOrNumber(value: string | number) : string {
 // For the following functions, change the type from 'unknown' to something else (not any!) to remove the type errors. 
 
 
-
-
-
 type A = unknown; 
 
 
@@ -109,3 +106,8 @@ function usesD(value: D) : string[] {
     return value.map(v => v.name)
 }
 
+
+
+
+
+// For the following functions change the function typings to remove the errors (ie. don't change the implmentation)
