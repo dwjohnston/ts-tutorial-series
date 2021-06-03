@@ -4,7 +4,7 @@
 
 The purpose of TypeScript is to add static typing to JavaScript.
 
-TypeScript is a (pre) language. 
+TypeScript is a (pre?) language. 
 
 ie. TypeScript isn't a language that runs by itself. It compiles down to JavaScript, and it is the JavaScript that runs. 
 
