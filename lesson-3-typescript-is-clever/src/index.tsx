@@ -4,6 +4,36 @@ const b = "world"; //const b: "world"
 
 const myStr: string = 9; //Type 'number' is not assignable to type 'string'.ts(2322)
 
+
+const alpha : string = "andy"; 
+
+type SomeObject = {
+    a: string; 
+    b: number; 
+    c: () => number; 
+}; 
+
+const instanceOfSomeObject: SomeObject = {
+    a: "ehllo", 
+    b: 9, 
+    c: () => { //Type '() => void' is not assignable to type '() => number'.
+
+    }
+}; 
+
+
+function createNumber() : number {
+    return 9; 
+}
+
+function usesNumber(value: number) {
+
+}
+
+const foundNumber: number = createNumber(); 
+usesNumber(foundNumber);
+
+
 a = 9; //Type 'number' is not assignable to type 'string'.ts(2322)
 
 

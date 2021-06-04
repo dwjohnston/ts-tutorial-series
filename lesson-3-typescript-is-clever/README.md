@@ -22,6 +22,62 @@ I will also put any errors as a comment beside the code.
 const myStr: string = 9; //Type 'number' is not assignable to type 'string'.ts(2322)
 ```
 
+## Type assertions 
+
+We can assert the type of variable by using a colon (`:`). 
+
+For example: 
+
+```typescript
+const alpha : string = "andy"; 
+```
+
+If the type doesn't match, you will get an error, as we saw before: 
+
+```typescript
+const myStr: string = 9; //Type 'number' is not assignable to type 'string'.ts(2322)
+```
+
+This can be useful in same cases when declaring the existence of a complicated object, in a test for example: 
+
+```typescript
+
+type SomeObject = {
+    a: string; 
+    b: number; 
+    c: () => number; 
+}; 
+
+const instanceOfSomeObject: SomeObject = {
+    a: "ehllo", 
+    b: 9, 
+    c: () => { //Type '() => void' is not assignable to type '() => number'.
+
+    }
+}; 
+```
+
+It might be tempting to type assertions everywhere, 'to be extra safe!', like: 
+
+```typescript
+function createNumber() : number {
+    return 9; 
+}
+
+function usesNumber(value: number) {
+
+}
+ // Asserting here that 'foundNumber' is a number isn't neccessary
+const foundNumber: number = createNumber(); 
+usesNumber(foundNumber);
+```
+
+But this isn't neccesary - TypeScript already knows the the type of foundNumber is `number`. 
+
+This is what we will be talking about in this lesson. 
+
+
+
 ## Inference 
 
 You'll likely hear the term 'inference' or 'infer' a lot when talking about TypeScript, as in 'TypeScript will _infer_ the type'. 
@@ -32,7 +88,7 @@ What we mean is that 'given what you (the developer) have told us (the TypeScrip
 
 ### Variable assignment
 
-Take the previous example: 
+Take a previous example: 
 
 ```
 let a = "hello"; //let a: string
