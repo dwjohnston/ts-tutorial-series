@@ -45,7 +45,7 @@ function myFirstGenericFunction<T> (value: T) {
 myFirstGenericFunction<string>("hello"); 
 myFirstGenericFunction<string>(999); // Argument of type 'number' is not assignable to parameter of type 'string'.ts(2345)
 
-myFirstGenericFunction("bob"); 
+myFirstGenericFunction("bob"); //function myFirstGenericFunction<string>(value: string): void
 
 
 function mySecondGenericFunction<T> (value: T) : T {

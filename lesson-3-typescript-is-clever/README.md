@@ -323,3 +323,5 @@ TODO: there must be a github issue about this.
 
 
 ## I don't have anything past inference. 
+
+## Exercise 3 - 
