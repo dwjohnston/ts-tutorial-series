@@ -136,9 +136,9 @@ Generally as a rule for type coercion:
 - It is always ok to do a `as SomeWiderType` coercion if that's what is needed. 
 - You avoid `as unknown as SomeOtherType` coercions, and that can lead to errors that TypeScript will not detect, because you overrode it. 
 
-### Return statements / inferring the return value of a function
+### Return statements / inferring the return type of a function
 
-If you do not declare the return value of a function, TypeScript will infer it: 
+If you do not declare the return type of a function, TypeScript will infer it: 
 
 ```typescript 
 const myFunction = () => {
