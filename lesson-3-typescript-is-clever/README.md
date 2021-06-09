@@ -318,10 +318,7 @@ TODO: there must be a github issue about this.
 
 
 
+## Exercise 3 
 
+See the instructions in `src/exercise.tsx`
 
-
-
-## I don't have anything past inference. 
-
-## Exercise 3 - 
