@@ -72,9 +72,7 @@ function takesStringOrNumber(value: string | number): void {
 
 const SomeComponent = () => {
 
-    const handleChange = (event) => {
-
-    }
+    const handleChange = 
 
     const handleMouseOver = (event) => {
 
@@ -82,8 +80,12 @@ const SomeComponent = () => {
 
     return <div>
         <input
-            onMouseOver={handleMouseOver}
-            onChange={handleChange}
+            onMouseOver={(event) => {
+
+            }}
+            onChange={(event) => {
+
+            }}
         />
     </div>
 }

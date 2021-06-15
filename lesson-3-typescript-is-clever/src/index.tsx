@@ -30,11 +30,21 @@ function usesNumber(value: number) {
 
 }
 
-const foundNumber: number = createNumber(); 
+const foundNumber = createNumber(); 
 usesNumber(foundNumber);
 
 
 a = 9; //Type 'number' is not assignable to type 'string'.ts(2322)
+
+
+
+type SomeTypeZ = number; 
+
+
+//@ts-ignore - 
+const myZ = "hello" as SomeTypeZ; 
+
+
 
 
 

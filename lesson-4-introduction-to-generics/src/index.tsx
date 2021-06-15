@@ -1,3 +1,6 @@
+import React from "react"; 
+import axios from "axios"; 
+
 export type MyFirstGeneric<T  = any> = {
     value: T; 
     name: string; 
@@ -111,3 +114,81 @@ const n = myFourthGenericFunction({ // const n: string
     name: "hello", 
     value: m
 }); 
+
+
+const MyComponent = () => {
+    const [value, setValue] = React.useState(null); 
+
+    return <div> 
+        {/* Argument of type 'string' is not assignable to parameter of type 'SetStateAction<null>'.ts(2345) */}
+        <input type ="text" onChange = {(e) => setValue(e.target.value) }/> 
+    </div>
+}; 
+
+const MyComponent2 = () => {
+    const [value, setValue] = React.useState<string | null>(null); 
+
+    return <div> 
+        <input type ="text" onChange = {(e) => setValue(e.target.value) }/> 
+    </div>
+}; 
+
+
+async function useAxios() {
+    const result = await axios({  //const result: AxiosResponse<any>
+        url: "/foo", 
+        method: "GET"
+    }); 
+
+    const data = result.data; //const data: any
+
+
+    
+}
+
+type User = {
+    name: string; 
+    age: number; 
+}
+
+async function useAxios2() {
+    const result = await axios({  //const result: AxiosResponse<any>
+        url: "/foo", 
+        method: "GET"
+    }); 
+
+    const data = result.data; //const data: any
+
+
+    
+}
+
+
+
+// UGH, SCRAP THIS. NOT A GOOD EXAMPLE. 
+
+
+type FruitTypes = "apple" | "banana" | "cherry"; 
+type FruitGrades = "A" | "B" | "C" | "F"; 
+
+type FruitInstance<TFruitType extends FruitTypes, TWeight extends number, TGrade extends FruitGrades> = {
+    fruitName: TFruitType; 
+    weight: TWeight; 
+    grade: TGrade; 
+}; 
+
+function fruitCloner<T extends FruitTypes, U extends FruitInstance<T, number, FruitGrades>>(fruitInstance: U) : Array<U> {
+
+    return [
+        fruitInstance, 
+        fruitInstance
+    ]; 
+}
+
+const fruit = {
+    fruitName: "apple" as const, 
+    weight: 12, 
+    grade: "A" as const
+}; 
+
+const fruits = fruitCloner(fruit);

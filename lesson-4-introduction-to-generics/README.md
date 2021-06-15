@@ -261,5 +261,40 @@ The third shows us that the result is a type `string`.
 
 
 ## You don't have to specify the function generic parameter, but it can be helpful. 
-eg. axios
 
+I mentioned that when using a generic function you usually don't need to explicitly state the generic arguments, as they will be inferred. However, in some cases it can be useful. 
+
+For example, when you when you want to widen the type. I use this often with React's `setState` function: 
+
+```typescript
+const MyComponent = () => {
+    const [value, setValue] = React.useState(null); 
+
+    return <div> 
+        {/* Argument of type 'string' is not assignable to parameter of type 'SetStateAction<null>'.ts(2345) */}
+        <input type ="text" onChange = {(e) => setValue(e.target.value) }/> 
+    </div>
+}; 
+```
+
+Here, because TypeScript has inferred the type as a `null` type, rather than `null | string` type, I am getting TypeErrors in my change handler. 
+
+To avoid this, I typically state the generic argument. 
+
+```typescript
+const MyComponent2 = () => {
+    const [value, setValue] = React.useState<string | null>(null); 
+
+    return <div> 
+        <input type ="text" onChange = {(e) => setValue(e.target.value) }/> 
+    </div>
+}; 
+```
+
+Another case is when the function will otherwise return an `any` or `unknown` type, for example when using axios to make API calls. 
+
+Here, axios allows you to 
+
+## Generic parameters can reference each other. 
+
+For example: 
