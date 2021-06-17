@@ -21,12 +21,40 @@ type Payload = unknown;
 
 // Change the function typing the such that the test does not have errors
 // You do not need to change the function implementation
-export function returnPayloadOfValue(value)  {
+export function returnPayloadOfValue(value) : Payload{
     return {
         weight: Math.random(), 
         value: value
     }
 }; 
+
+// Exercise 2.5 
+// Change the function typing the such that the test does not have errors
+// You do not need to change the function implementation
+// Do not allow typescript to infer the type. 
+
+export async function fetchRandomUser() : unknown {
+    return {
+        name: "alice", 
+        age: 11, 
+    }
+}; 
+
+// Exercise 2.6
+
+// nb. no corresponding test for this one
+
+// This function be showing a type error, but it is not. 
+// Update the function typing such that the fallback return statement has an error
+function createStringFromNumber(value: number )  {
+
+    if (value) {
+        return `${value}`; 
+    }
+
+    return value; 
+}
+
 
 
 
@@ -80,19 +108,6 @@ export function createFruitFromColor(color: PossibleColors) : Fruit {
 
 
 
-// Exercise 5
-
-// This function be showing a type error, but it is not. 
-// Update the function typing such that it the fallback return statement has an error
-function createStringFromNumber(value: number) {
-
-    if (value) {
-        return `${value}`; 
-    }
-
-    //@ts-expect-error
-    return value; 
-}
 
 
 

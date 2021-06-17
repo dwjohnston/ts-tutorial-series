@@ -1,4 +1,4 @@
-import { callTheFunctionForMe, createFruitFromColor, returnFavouriteColor, returnPayloadOfValue, returnsSameTypeAsValueParameter, someFunction } from "./exercise";
+import { callTheFunctionForMe, createFruitFromColor, fetchRandomUser, returnFavouriteColor, returnPayloadOfValue, returnsSameTypeAsValueParameter, someFunction } from "./exercise";
 
 describe("returnsSameTypeAsValue", () => {
     it("does not have an error if the types are the same", () => {
@@ -22,6 +22,14 @@ describe("returnsSameTypeAsValue", () => {
 
 
 describe("returnPayloadOfValue", () => {
+
+    it ("not not allow random properties", () => {
+        const result = returnPayloadOfValue("hello");
+
+        //@ts-expect-error
+        const blurp: string = result.blurp; 
+    }); 
+
     it("does not have errors if the typing is the same", () => {
 
 
@@ -55,6 +63,28 @@ describe("returnPayloadOfValue", () => {
 
     });
 });
+
+describe("fetchRandomUser", () => {
+
+    it("resolves to a User object", async () => {
+
+        const result = await fetchRandomUser(); 
+        const name: string = result.name; 
+        const age: number = result.age; 
+    }); 
+
+
+    it("has type errors in the right places", async () => {
+
+        const result = await fetchRandomUser(); 
+        //@ts-expect-error
+        const name: number = result.name; 
+        const age: number = result.age; 
+        //@ts-expect-error
+        const blurp: number = result.blurp; 
+    }); 
+}); 
+
 
 describe("returnFavouriteColor", () => {
     it("has type errors if you don't pass a correct color in", () => {
