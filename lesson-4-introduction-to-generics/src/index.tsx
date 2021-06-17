@@ -189,6 +189,53 @@ const fruit = {
     fruitName: "apple" as const, 
     weight: 12, 
     grade: "A" as const
-}; 
+} ; 
 
 const fruits = fruitCloner(fruit);
+
+
+
+
+
+type Jackpot<T extends string | number> = {
+    winningValue: T; 
+    prizeType: "money" | "holiday"; 
+}
+
+function verifyJackpot<TPayloadType extends string |number, TJackpot extends Jackpot<TPayloadType>> (possibleValues: Array<TPayloadType>, jackpot: TJackpot) : TJackpot  {
+    if (possibleValues.includes(jackpot.winningValue)){
+        return jackpot; 
+    }
+    else {
+        throw new Error("The jackpot was not valid");
+    }
+}
+
+// Note that the generic variables can be referenced in any order
+function verifyJackpot2<TJackpot extends Jackpot<TPayloadType>, TPayloadType extends string |number> (possibleValues: Array<TPayloadType>, jackpot: TJackpot) : TJackpot  {
+    if (possibleValues.includes(jackpot.winningValue)){
+        return jackpot; 
+    }
+    else {
+        throw new Error("The jackpot was not valid");
+    }
+}
+
+
+
+
+
+
+
+function returnsAString(value: number) : string {
+    return ""; 
+}
+
+describe("A test", () => {
+
+    it ("has type errors in the right places", () => {
+
+        //@ts-expect-error
+        returnsAString("hello");
+    }); 
+}); 

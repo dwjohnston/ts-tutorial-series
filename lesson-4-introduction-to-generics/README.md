@@ -291,6 +291,9 @@ const MyComponent2 = () => {
 }; 
 ```
 
+
+TODO 
+
 Another case is when the function will otherwise return an `any` or `unknown` type, for example when using axios to make API calls. 
 
 Here, axios allows you to 
@@ -298,3 +301,50 @@ Here, axios allows you to
 ## Generic parameters can reference each other. 
 
 For example: 
+
+``` typescript
+type Jackpot<T extends string | number> = {
+    winningValue: T; 
+    prizeType: "money" | "holiday"; 
+}
+
+function verifyJackpot<TPayloadType extends string |number, TJackpot extends Jackpot<TPayloadType>> (possibleValues: Array<TPayloadType>, jackpot: TJackpot) : TJackpot  {
+    if (possibleValues.includes(jackpot.winningValue)){
+        return jackpot; 
+    }
+    else {
+        throw new Error("The jackpot was not valid");
+    }
+}
+
+// Note that the generic variables can be referenced in any order
+function verifyJackpot2<TJackpot extends Jackpot<TPayloadType>, TPayloadType extends string |number> (possibleValues: Array<TPayloadType>, jackpot: TJackpot) : TJackpot  {
+    if (possibleValues.includes(jackpot.winningValue)){
+        return jackpot; 
+    }
+    else {
+        throw new Error("The jackpot was not valid");
+    }
+}
+```
+
+
+
+## @ts-expect-error
+
+`//@ts-expect-error` is a helpful tool, particularly in writing tests. 
+
+It will show an error if TypeScript _is not_ giving an error. 
+
+This is helpful when writing tests to check that TypeScript is giving you errors in the right places: 
+
+```typescript
+describe("A test", () => {
+
+    it ("has type errors in the right places", () => {
+
+        //@ts-expect-error
+        returnsAString("hello");
+    }); 
+}); 
+```

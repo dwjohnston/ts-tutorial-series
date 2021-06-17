@@ -1,24 +1,27 @@
 
+//EXERCISES
+
+// I have created untyped functions here. 
+// You need to type the functions such that the tests no longer have errors. 
+
+
 // Exercise 1
 
 // Change the function typing the such that the test does not have errors
 // You do not need to change the function implementation
-export function returnsSameTypeAsValueParameter<T>(value: T) :T {
+export function returnsSameTypeAsValueParameter(value){
     return value; 
 }
 
 
 // Change the type
-type Payload<T> = {
-    value: T; 
-    weight:number; 
-}
+type Payload = unknown; 
 
 // Exercise 2
 
 // Change the function typing the such that the test does not have errors
 // You do not need to change the function implementation
-export function returnPayloadOfValue<T>(value:T) : Payload<T> {
+export function returnPayloadOfValue(value)  {
     return {
         weight: Math.random(), 
         value: value
@@ -93,3 +96,25 @@ function createStringFromNumber(value: number) {
 
 
 
+// Exercise 6 
+
+// Change the function typing the such that the test does not have errors
+// You do not need to change the function implementation
+
+// You need to implement this type
+type CType = unknown; 
+
+export function someFunction(a, b, c) {
+    return c; 
+}
+
+
+
+//Exercise 7
+
+// Change the function typing the such that the test does not have errors
+// You do not need to change the function implementation
+
+export function callTheFunctionForMe<TParam, TReturnType>(fn, param)  {
+    return fn(param); 
+}
