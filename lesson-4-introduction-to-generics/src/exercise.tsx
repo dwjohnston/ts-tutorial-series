@@ -31,7 +31,7 @@ export function returnPayloadOfValue(value) : Payload{
 // Exercise 2.5 
 // Change the function typing the such that the test does not have errors
 // You do not need to change the function implementation
-// Do not allow typescript to infer the type. 
+// Do not allow typescript to infer the return type. 
 
 export async function fetchRandomUser() : unknown {
     return {

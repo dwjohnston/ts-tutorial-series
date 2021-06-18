@@ -23,33 +23,71 @@ When we declare a function component:
 
 ```typescript
 const MyComponent = ({name}) => {
-    return <div> hello! {name} </div>; 
+    return <div> hello {name} </div>; 
 }
 ```
 
 The component declaration is just a straight up function. 
 
-When we type the `<div> hello!</div>` - this is just syntatic shorthand for writing: 
+When we type the `<div> hello {name}</div>` - this is just syntatic shorthand for writing: 
 
 ```typescript
-//snippet here
+React.createElement("div", null,
+        "hello ",
+        name);
 ```
 
 If we use the above component in another component like: 
 
+`<MyComponent name ="foo"/>` then similarly the actual code is just: 
+
 ```typescript 
 const OtherComponent = () => {
-    return <MyComponent name ="foo"/>;
-
-}
+    return React.createElement(MyComponent, { name: "foo" });
+};
 ```
 
-Essentially what we are doing is making a _function call_, which returns the same snippet as above. 
+Now when we execute this code, what we get is:
 
-It is that object that ultimately goes to the React engine and determines what gets displayed on the screen. 
+```
+console.log(<MyComponent name ="foo"/>); 
+console.log(<OtherComponent/>); 
+```
 
+```
+{ '$$typeof': Symbol(react.element),
+  type: [Function: MyComponent],
+  key: null,
+  ref: null,
+  props: { name: 'foo' },
+  _owner: null,
+  _store: {} }
+{ '$$typeof': Symbol(react.element),
+  type: [Function: OtherComponent],
+  key: null,
+  ref: null,
+  props: {},
+  _owner: null,
+  _store: {} }
+```
+
+
+
+It is these objects that ultimately go to the React engine and determines what gets displayed on the screen. 
 
 So what I want to highlight here is that when we talk about _components_, we are talking about functions (or the React.Component class) that return JSX. When we talk about _JSX_ or _rendered JSX_ we are talking about that object. 
+
+### Exercise 
+
+Look at the code in `src/render.tsx`. 
+
+Now run `yarn build:render`. 
+
+Look at the compiled code in `lib/render.js`
+
+Now run `yarn start:render`
+
+Examine the output. 
 
 
 
