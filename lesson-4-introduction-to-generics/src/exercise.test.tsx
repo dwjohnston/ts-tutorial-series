@@ -148,6 +148,14 @@ describe("someFunction", () => {
             bravo: "two",
             charlie: 3
         });
+
+
+        someFunction(123, "2", {
+            //@ts-expect-error
+            alpha: "aaaaa",
+            bravo: "two",
+            charlie: 3
+        });
     });
 
     it("b and c.bravo are the same type", () => {
@@ -157,6 +165,13 @@ describe("someFunction", () => {
             alpha: "123",
             //@ts-expect-error
             bravo: 2,
+            charlie: 3
+        });
+
+        someFunction("1", 2222, {
+            alpha: "123",
+            //@ts-expect-error
+            bravo: "aaaaaaaa",
             charlie: 3
         });
     });

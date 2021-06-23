@@ -46,12 +46,13 @@ export async function fetchRandomUser() : unknown {
 
 // This function be showing a type error, but it is not. 
 // Update the function typing such that the fallback return statement has an error
-function createStringFromNumber(value: number )  {
+function createStringFromNumber(value: number ) : string {
 
     if (value) {
         return `${value}`; 
     }
 
+    //@ts-expect-error
     return value; 
 }
 
@@ -75,6 +76,8 @@ type Fruit = {
     color: PossibleColors; 
     fruitName: string; // You do not need to change this line - we are ok with the actual fruits being just a string for this exercise
 }
+
+// TODO need a test that enforces that Fruit color is only the Possible colors. 
 
 // Change the function typing the such that the test does not have errors
 // You do not need to change the function implementation 
