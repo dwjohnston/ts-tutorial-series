@@ -205,6 +205,22 @@ describe("someFunction", () => {
         //@ts-expect-error
         const d: string = result.charlie;
 
+
+        const result2 = someFunction("1", "2", {
+            alpha: "123",
+            bravo: "222",
+            charlie: () => 99999
+        });
+
+
+        const c2: () => number = result2.charlie;
+
+        //@ts-expect-error
+        const d2: string = result2.charlie;
+
+
+
+
     });
 
 });
