@@ -62,6 +62,15 @@ const c = "foo" as string;
 const d = mySecondGenericFunction(c); //const d: string
 
 
+function functionWithTwoParams<T> (value1: T, value2: T) {
+
+}
+
+functionWithTwoParams(1,1); 
+functionWithTwoParams("a", "b"); 
+functionWithTwoParams(1, "2"); //Argument of type 'string' is not assignable to parameter of type 'number'.ts(2345)
+
+
 
 function myThirdGenericFunction<T extends string | number> (value: T) : T {
     return value; 

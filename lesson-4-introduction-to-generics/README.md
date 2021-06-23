@@ -150,6 +150,21 @@ const d = mySecondGenericFunction(c); //const d: string
 
 Here, this function's value parameter has the same type as the functions return value. Not the same _value_ but the same _type_!
 
+**Nb.** Note that we mean that they have the same _type_ not the same _value_. They can't be different values of the same type!
+
+Another example: 
+
+```typescript
+function functionWithTwoParams<T> (value1: T, value2: T) {
+
+}
+
+functionWithTwoParams(1,1); 
+functionWithTwoParams("a", "b"); 
+functionWithTwoParams(1, "2"); //Argument of type 'string' is not assignable to parameter of type 'number'.ts(2345)
+```
+
+
 
 ## Constraining generic parameters
 
