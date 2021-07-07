@@ -3,9 +3,34 @@ import React, { useEffect, useState } from 'react';
 
 // Exercise 1 - Add typings that make sense to the function. 
 // Note how the component is being used in exercise 2
-export const Header = (props) => {
+
+
+type HeaderProps = {
+
+}
+export const Header = (props: HeaderProps) => {
     const { children, className, style } = props;
     return <header className={className} style={style}>{children}</header>
+}
+
+const App0 = () => {
+    return <div> 
+
+            <Header>foo </Header>; 
+            <Header><span>foo</span> </Header>; 
+            <Header className ="bar">foo </Header>; 
+
+            <Header style = {{color: "red"}}> foo </Header>; 
+
+
+            {/* @ts-expect-error */}
+            <Header style = {{blurp: "red"}}> foo </Header>; 
+
+
+
+
+
+    </div>;
 }
 
 
