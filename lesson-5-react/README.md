@@ -482,19 +482,171 @@ I don't really have anything to say about this.
 
 ## Styled components
 
+Styled components will retain the properties of their underlying element. 
+
+Remember that all that styled components are doing is passing a className onto the component they are styling. 
+
+
+```typescript
+const SomeComponent = (props: {className?: string, title: string}) => {
+    return <div className={props.className}></div>
+}
+
+
+const StyledDiv = styled.div`
+    color: red; 
+`; 
+
+const StyledInput = styled.input` 
+
+`; 
+
+const StyledSomeComponent= styled(SomeComponent)`
+
+`;
+
+
+const App2 = () => {
+    return <div> 
+        <StyledDiv style = {{color: 'red'}}/>
+        <StyledInput onClick = {(e) => {
+            // Typing of the original event is retained. 
+            console.log(e.target); 
+        }}/>
+        <StyledSomeComponent title ="hello"/>
+
+
+        {/* Unknown types not allowed */}
+        <StyledDiv foo ="bar"/>
+        {/* Missing types are a problem */}
+        <StyledSomeComponent />
+
+        </div>
+}
+```
+
+
+If you need to add additional props to a component, then you can use the generic parameter of the `styled` function. 
+
+```typescript
+const StyledDiv2 = styled.div<{ isSelected: boolean; mode: "green" | "blue" }>`
+  border: solid 1px black;
+
+  // We get intellisense here
+  color: ${(props) => (props.isSelected ? "red" : "blue")};
+
+  background-color: ${(props) => props.mode};
+`;
+
+const App = () => {
+  return (
+    <div>
+      <StyledDiv2 isSelected mode="green">
+        one
+      </StyledDiv2>
+      <StyledDiv2 isSelected mode="blue">
+        two
+      </StyledDiv2>
+      <StyledDiv2 isSelected={false} mode="green">
+        three
+      </StyledDiv2>
+    </div>
+  );
+};
+```
+
+_However_ styled components will pass the additional property on, and this will cause warnings in the browser: 
+
+https://codesandbox.io/s/react-typescript-forked-xu4sr?file=/src/index.tsx
+
+![styled comps screenshot](./assets/ss2.png)
+
+(I'm not sure what's going on with the sandbox, but certainly in our builds this scenario would fail). 
+
+(Note that the isSelected doesn't go through). 
 
 
 ## CSSProperties
 
-The list of all CSS properties is available as React.CSSProperties
+The list of all CSS properties is available as `React.CSSProperties`
 
-TODO
+This is helpful if you want to define a `style` prop: 
 
 
-## Some tricky bits
+```typescript
+type MyComponentThatAcceptsStylesProps = {
+    style?: React.CSSProperties;
+    className?: string;
+    title: string;
+}
 
-### refs
+export const MyComponentThatAcceptsStyles = (props: MyComponentThatAcceptsStylesProps) => {
+    const {
+        style,
+        className,
+        title
+    } = props;
 
-I found that refs really fuck up the typings. 
+    return <div className={className} style={style}>
+        {title}
+    </div>
+}
+
+const App4 = () => {
+    return <div>
+        <MyComponentThatAcceptsStyles title="foo" />v
+        <MyComponentThatAcceptsStyles style={{
+            color: "red"
+        }} title="foo" />
+        <MyComponentThatAcceptsStyles style={{
+            //Type 'number' is not assignable to type 'Color | undefined'.ts(2322)
+            color: 9999,
+        }} title="foo" />
+        <MyComponentThatAcceptsStyles style={{
+            //Type '{ blurp: number; }' is not assignable to type 'Properties<string | number, string & {}>'.
+            blurp: 9999,
+        }} title="foo" />
+    </div>
+}
+```
+
+
+### Ref forwarding
+
+Example for how to do ref forwarding: 
+
+```typescript
+const StandardRefExample = () => {
+
+    const ref = React.useRef<HTMLDivElement | null>(null); 
+
+    return <div ref = {ref}> 
+
+    </div>
+}
+
+const RefForwardedExampled = React.forwardRef<HTMLDivElement>((props, ref) => {
+    return <div ref ={ref}> 
+
+    </div>
+}); 
+
+const App5 = () => {
+
+    const ref = React.useRef<HTMLDivElement | null>(null); 
+
+    return <RefForwardedExampled ref = {ref}/>
+}
+```
+
+_However!_ ❗ - Enzyme does _NOT_ play well with ref forwarding at all. Basically if you take an existing component, and then add ref forwarding to it, all of your enzyme tests that were looking for that component will break. 
+
+One reason to not use Enzyme. 
+
+(I might be being a bit dramatic here, just looking at the some of the github issues, there might be some simple solutions): 
+
+https://github.com/enzymejs/enzyme/issues/2190
+https://github.com/enzymejs/enzyme/issues/1852
+
 
 

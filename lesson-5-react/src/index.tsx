@@ -1,5 +1,5 @@
 import React from "react";
-
+import styled from "styled-components";
 
 
 /**
@@ -298,4 +298,142 @@ const MyComponentWithInputs = () => {
 
         <input onChange={changeHandler} />
     </div>
+}
+
+/**
+ * Styled Components
+ */
+
+const SomeComponent = (props: { className?: string, title: string }) => {
+    return <div className={props.className}></div>
+}
+
+
+const StyledDiv = styled.div`
+    color: red; 
+`;
+
+const StyledInput = styled.input` 
+
+`;
+
+const StyledSomeComponent = styled(SomeComponent)`
+
+`;
+
+
+const App2 = () => {
+    return <div>
+        <StyledDiv style={{ color: 'red' }} />
+        <StyledInput onClick={(e) => {
+            // Typing of the original event is retained. 
+            console.log(e.target);
+        }} />
+        <StyledSomeComponent title="hello" />
+
+
+        {/* Unknown types not allowed */}
+        <StyledDiv foo="bar" />
+        {/* Missing types are a problem */}
+        <StyledSomeComponent />
+
+    </div>
+}
+
+
+
+
+const StyledDiv2 = styled.div<{ isSelected: boolean; mode: "green" | "blue" }>`
+  border: solid 1px black;
+
+  // We get intellisense here
+  color: ${(props) => (props.isSelected ? "red" : "blue")};
+
+  background-color: ${(props) => props.mode};
+`;
+
+const App3 = () => {
+    return (
+        <div>
+            <StyledDiv2 isSelected mode="green">
+                one
+            </StyledDiv2>
+            <StyledDiv2 isSelected mode="blue">
+                two
+            </StyledDiv2>
+            <StyledDiv2 isSelected={false} mode="green">
+                three
+            </StyledDiv2>
+        </div>
+    );
+};
+
+
+/**
+ * CSS Properties
+ */
+
+
+
+type MyComponentThatAcceptsStylesProps = {
+    style?: React.CSSProperties;
+    className?: string;
+    title: string;
+}
+
+export const MyComponentThatAcceptsStyles = (props: MyComponentThatAcceptsStylesProps) => {
+    const {
+        style,
+        className,
+        title
+    } = props;
+
+    return <div className={className} style={style}>
+        {title}
+    </div>
+}
+
+const App4 = () => {
+    return <div>
+        <MyComponentThatAcceptsStyles title="foo" />v
+        <MyComponentThatAcceptsStyles style={{
+            color: "red"
+        }} title="foo" />
+        <MyComponentThatAcceptsStyles style={{
+            //Type 'number' is not assignable to type 'Color | undefined'.ts(2322)
+            color: 9999,
+        }} title="foo" />
+        <MyComponentThatAcceptsStyles style={{
+            //Type '{ blurp: number; }' is not assignable to type 'Properties<string | number, string & {}>'.
+            blurp: 9999,
+        }} title="foo" />
+    </div>
+}
+
+
+/**
+ * Ref Forwarding
+ */
+
+
+const StandardRefExample = () => {
+
+    const ref = React.useRef<HTMLDivElement | null>(null); 
+
+    return <div ref = {ref}> 
+
+    </div>
+}
+
+const RefForwardedExampled = React.forwardRef<HTMLDivElement>((props, ref) => {
+    return <div ref ={ref}> 
+
+    </div>
+}); 
+
+const App5 = () => {
+
+    const ref = React.useRef<HTMLDivElement | null>(null); 
+
+    return <RefForwardedExampled ref = {ref}/>
 }
