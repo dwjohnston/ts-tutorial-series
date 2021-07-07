@@ -33,9 +33,11 @@ const App0 = () => {
     </div>;
 }
 
+type MainProps = {
 
+}
 // Exercise 2 add typings to make sense. 
-export const Main = (props) => {
+export const Main = (props : MainProps) => {
     const {
         header,
         body,
@@ -102,6 +104,11 @@ export const UserPane = (props: UserPaneProps) => {
     </div>
 }
 
+
+export const UserPane2 = (props: UserPaneProps) => {
+    return props.user.name; 
+}
+
 export const UserDetailsPage = () => {
     const [user, setUser] = useState(null);
 
@@ -112,11 +119,12 @@ export const UserDetailsPage = () => {
     return <section>
         <h2>User Details</h2>
         {user && <UserPane user={user} />}
+        {user && <UserPane2 user = {user}/>}
     </section>
 }
 
 
-// Simple use case 
+// Simple use case  
 const App3 = () => {
     return <UserDetailsPage />
 }
@@ -125,7 +133,10 @@ const App3 = () => {
 // Exercise 4 - Add typings that make sense
 // This scenario is like above, but allows a flexible way to render the user pane via a render prop
 
-export const FlexibleUserDetailsPage = (props) => {
+type FlexibleUserDetailsPageProps = {
+}
+
+export const FlexibleUserDetailsPage = (props : FlexibleUserDetailsPageProps) => {
     const { RenderUserPane } = props;
     const [user, setUser] = useState(null);
 
@@ -140,13 +151,17 @@ export const FlexibleUserDetailsPage = (props) => {
 }
 
 const App4 = () => {
-    //@ts-expect-error
-    return <FlexibleUserDetailsPage />
+    return <div>
+        {/* @ts-expect-error*/}
+        <FlexibleUserDetailsPage />
+        <FlexibleUserDetailsPage RenderUserPane ={UserPane}/>
+        <FlexibleUserDetailsPage RenderUserPane = {UserPane2}/>
+</div>
 }
 
 const App5 = () => {
 
-    return <FlexibleUserDetailsPage RenderUserPane={UserPane} />
+    return 
 }
 
 

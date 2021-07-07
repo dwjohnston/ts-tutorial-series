@@ -16,7 +16,7 @@ In this lesson we will go over the ones you may need to use the most.
 
 Remember though - by allowing TypeScript to infer types, you often don't need to explicitly state the types!
 
-The reality is - there are probably only two React types you actually need to know - `React.ReactNode` and `React.ComponentType`. 
+The reality is - there are probably only three React types you actually need to know - `React.ReactElement`, `React.ReactNode`  and `React.ComponentType`. 
 
 ## Before we start - let's talk about React and JSX. 
 
@@ -91,8 +91,6 @@ Look at the compiled code in `lib/render.js`
 Now run `yarn start:render`
 
 Examine the output. 
-
-
 ## ReactElement vs ReactNode vs JSX.Element
 
 These types are the return value of a function component, or a class component's `render` function. 
@@ -136,6 +134,73 @@ A Class component is first instantiated, and then returns JSX via it's render me
 Now there is one _very important_ (and annoying) distinction. 
 
 A `React.FunctionComponent` must return rendered JSX (more on this later), strings, numbers etc, are not a valid return type for a `React.FunctionComponent`. For a `React.ComponentClass` the `render` method can return strings, numbers etc. 
+
+
+See debug2.tsx 
+
+```typescript
+import React from "react"; 
+
+type User = {
+    id: string; 
+    name: string; 
+    imgSrc: string; 
+}
+
+type UserPanelProps = {
+    user: User; 
+}
+
+export const UserPanel1 = (props: UserPanelProps) => {
+    return <div> 
+        {props.user.name}
+    </div> 
+}
+
+export const UserPanel2 = (props: UserPanelProps) => {
+    return props.user.name;
+}
+
+export const UserPanel3 = (props: UserPanelProps) => {
+    return <>props.user.name</>
+}
+
+
+export const UserPanel4 = (props: UserPanelProps) => {
+    return null;
+}
+
+
+class UserPanel5 extends React.Component<UserPanelProps> {
+    render() {
+        return this.props.user.name; 
+    }
+}
+
+const Main = () => {
+    const user = {
+        id: "1", 
+        name: "Foo bar", 
+        imgSrc: ""
+    }
+    return <div> 
+        <UserPanel1 user = {user}/>
+        {/*   
+            'UserPanel2' cannot be used as a JSX component.
+            Its return type 'string' is not a valid JSX element.ts(2786)
+         */}
+        <UserPanel2 user = {user}/>
+        <UserPanel3 user = {user}/>
+        {UserPanel2({user})}
+
+        <UserPanel4 user = {user}/>
+
+        <UserPanel5 user = {user}/>
+
+
+    </div>
+}
+```
 
 To be clear about what we mean here - take four kinds of 'UserPanel' components: 
 
@@ -263,7 +328,10 @@ What's the best work around?
 
 I've asked a question here: https://stackoverflow.com/questions/68265095/is-there-a-typing-for-react-function-components-that-includes-returning-fragment
 
-I'm leaning towards that we would define our own type that has the 'wider' function component typing. 
+~~I'm leaning towards that we would define our own type that has the 'wider' function component typing.~~
+
+It seems like the best thing to do is _always_ make a React component return a ReactElement, and if you are really trying to return a string, make sure you wrap in a fragment. 
+
 
 ## React.Component 
 
@@ -412,7 +480,9 @@ const App = () => {
 }
 ```
 
-**Moral of the story** I think don't use `React.ComponentType` and use `() => ReactNode` instead. Given that we use function components for the most part, this should be ok. 
+**Moral of the story** ~~I think don't use `React.ComponentType` and use `() => ReactNode` instead. Given that we use function components for the most part, this should be ok.~~
+
+`React.ComponentType` is right to use, make sure you are typing the return value of your function components to be `React.ReactElement`. 
 
 But also, I think needs more investigation, lets circle back in a future iteration? 
 
@@ -650,3 +720,10 @@ https://github.com/enzymejs/enzyme/issues/1852
 
 
 
+## Summary 
+
+|Scenario   | Type To Use  |
+|---|---|
+| Declaring a function component   | return type is `React.ReactElement`  |
+| Typing a component property that is to be some react content or a primitive | `React.ReactNode`  |
+| Typing a component property that is to be a render prop   | `React.ComponentType<P>` - You likely want to type the generic   |
