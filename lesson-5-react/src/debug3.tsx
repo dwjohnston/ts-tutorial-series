@@ -30,7 +30,6 @@ const Main =  () => {
 
 }
 
-
 const ComponentC = () : React.ReactElement => {
     //Type 'string' is not assignable to type 'ReactElement<any, string | JSXElementConstructor<any>>'.ts(2322)
     return "aaa"; 

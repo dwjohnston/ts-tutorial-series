@@ -1,11 +1,3 @@
-# Todo
-
-- check if JSX.Elmeent is assignable to ReactNode. 
-- Check stuff about 'Function of a certain type'. 
-
-
-
-
 # TypeScript and React
 
 Typings for React can be added by install `yarn add -D @types/react`. 
@@ -14,7 +6,7 @@ There are a lot of typings for React.
 
 In this lesson we will go over the ones you may need to use the most. 
 
-Remember though - by allowing TypeScript to infer types, you often don't need to explicitly state the types!
+~~Remember though - by allowing TypeScript to infer types, you often don't need to explicitly state the types!~~
 
 The reality is - there are probably only three React types you actually need to know - `React.ReactElement`, `React.ReactNode`  and `React.ComponentType`. 
 
@@ -91,13 +83,70 @@ Look at the compiled code in `lib/render.js`
 Now run `yarn start:render`
 
 Examine the output. 
-## ReactElement vs ReactNode vs JSX.Element
+
+## Example Code Items: 
+
+For the purposes of this lesson I am going to reference variables `a,b,c,d,e,f,g,h`.
+
+```typescript
+// Class component
+class ClassBasedUserPanel extends React.Component<{ user: User }> {
+    render() {
+        return <div>{this.props.user.name}</div>;
+    }
+}
+
+// Class component that returns a string
+class ClassBasedUserPanelThatReturnsString extends React.Component<{ user: User }>  {
+    render() {
+        return this.props.user.name;
+    };
+}
+
+
+// Function component
+const FunctionBasedUserPanel = (props: { user: User }) => {
+    return <div>{props.user.name} </div>;
+}
+
+// Function component that returns a string
+const FunctionBasedUserPanelThatReturnsString = (props: { user: User }) => {
+    return props.user.name;
+};
+
+// Directly referencing the component itself
+// Note how TypeScript is inferring the type. 
+
+// TypeScript is not being very helpful here!
+const a = ClassBasedUserPanel;  //const a: typeof ClassBasedUserPanel
+const b = FunctionBasedUserPanel;
+// const b: (props: {
+//     user: User;
+// }) => JSX.Element
+
+const c = ClassBasedUserPanelThatReturnsString; //const a2: typeof ClassBasedUserPanelThatReturnsString
+
+const d = FunctionBasedUserPanelThatReturnsString;
+//const b2: (props: {
+//    user: User;
+//}) => string
+
+
+
+// Referencing output of the components
+const e = new ClassBasedUserPanel({ user: { name: "hello", id: "1", imgSrc: "" } }).render();  //const a: JSX.Element
+const f = FunctionBasedUserPanel({ user: { name: "hello", id: "1", imgSrc: "" } });    //const b: JSX.Element
+
+const g = new ClassBasedUserPanelThatReturnsString({ user: { name: "hello", id: "1", imgSrc: "" } }).render(); //const e: string
+const h = FunctionBasedUserPanelThatReturnsString({ user: { name: "hello", id: "1", imgSrc: "" } }); //const f: string
+```
+## React.ReactElement vs React.ReactNode vs JSX.Element
 
 These types are the return value of a function component, or a class component's `render` function. 
 
 I _highly recommend reading this thread_: https://stackoverflow.com/questions/58123398/when-to-use-jsx-element-vs-reactnode-vs-reactelement
 
-A `ReactElement` is specifically a 'reacty' JSX object, it basically looks like this: 
+A `React.ReactElement` is specifically a 'reacty' JSX object, it basically looks like this: 
 
 ```
 { '$$typeof': Symbol(react.element),
@@ -115,9 +164,83 @@ It has two generic parameters `P` for it's props, and `T` for.... I'm not sure w
 
 A `JSX.Element` is a ReactElement with the generic parameters set as `any`. Note that the `React.ReactElement` has its default generic parameters set to `any`-ish anyway. 
 
-A `ReactNode` is this, and also other valid JSX expressions - such as a ReactFragment, a string, a number or an array of ReactNodes, or null, or undefined, or a boolean.
+A `React.ReactNode` is this, and also ~~other valid JSX expressions~~ items* - such as a ReactFragment, a string, a number or an array of ReactNodes, or null, or undefined, or a boolean.
 
-**Take home point**: `ReactElement` and `ReactNode` are specifically the 'reacty' object - whereas ReactNode is that + primitives like string, number, fragment, null etc. 
+```typescript
+ function acceptsReactElement(value: React.ReactElement) {
+
+}
+acceptsReactElement(a);     // Not OK
+acceptsReactElement(b);     // Not OK
+acceptsReactElement(c);     // Not OK
+acceptsReactElement(d);     // Not OK
+
+acceptsReactElement(e);     //OK
+acceptsReactElement(f);     //OK
+acceptsReactElement(g);     //Not OK
+acceptsReactElement(h);     //Not OK
+
+function acceptsJsxElement(value: JSX.Element) {
+
+}
+
+acceptsJsxElement(a);     // Not OK
+acceptsJsxElement(b);     // Not OK
+acceptsJsxElement(c);     // Not OK
+acceptsJsxElement(d);     // Not OK
+
+acceptsJsxElement(e);     //OK
+acceptsJsxElement(f);     //OK
+acceptsJsxElement(g);     //Not OK
+acceptsJsxElement(h);     //Not OK
+
+
+function acceptsReactNode(value: React.ReactNode) {
+
+}
+
+acceptsReactNode(a);     // Not OK
+acceptsReactNode(b);     // Not OK
+acceptsReactNode(c);     // Not OK
+acceptsReactNode(d);     // Not OK
+
+acceptsReactNode(e);     //OK
+acceptsReactNode(f);     //OK
+acceptsReactNode(h);     //OK
+acceptsReactNode(g);     //OK
+```
+
+*I'm a little unclear on terminology here. 
+
+For example: 
+
+```typescript
+const Foo = () => {
+    const item = "hello"; 
+
+    return <div> {item}</div>
+}; 
+```
+
+Is a valid JSX expression, whereas: 
+
+```typescript
+const Foo = () => {
+    const item = {
+        foo: "bar"
+    }
+
+    return <div> {item}</div>
+}; 
+```
+
+Will throw a runtime error. 
+
+_However_ a string type _does_ is treated differently by React's typings. We will get onto this in the next section.
+
+
+**Take home point**: `React.ReactElement` and `JSX.Element` are specifically the 'reacty' object - whereas ReactNode is that + primitives like string, number, fragment, null etc. 
+
 
 ## React.ComponentClass vs React.FunctionComponent vs React.ComponentType
 
@@ -133,14 +256,64 @@ A Class component is first instantiated, and then returns JSX via it's render me
 
 Now there is one _very important_ (and annoying) distinction. 
 
-A `React.FunctionComponent` must return rendered JSX (more on this later), strings, numbers etc, are not a valid return type for a `React.FunctionComponent`. For a `React.ComponentClass` the `render` method can return strings, numbers etc. 
+A `React.FunctionComponent` must return a `React.ReactElement | null`, strings, numbers etc, are not a valid return type for a `React.FunctionComponent`. For a `React.ComponentClass` the `render` method can return strings, numbers etc, (ie can return a `React.ReactNode`)
 
 
-See debug2.tsx 
+`React.FunctionComponent` and `React.ClassComponent` both have one generic parameter - which is the shape of their props.
 
 ```typescript
-import React from "react"; 
+function acceptsReactComponentType(value: React.ComponentType<{ user: User }>) {
 
+}
+
+acceptsReactComponentType(a); //OK
+acceptsReactComponentType(b); //OK
+acceptsReactComponentType(c); //OK
+acceptsReactComponentType(d); // Not OK!  <--❗
+
+acceptsReactComponentType(e);   //Not OK
+acceptsReactComponentType(f);   //Not OK
+acceptsReactComponentType(g);   //Not OK
+acceptsReactComponentType(h);   //Not OK
+
+function acceptsReactComponentClass(value: React.ComponentClass<{ user: User }>) {
+
+}
+
+acceptsReactComponentClass(a);  //OK
+acceptsReactComponentClass(b);  //Not OK
+
+acceptsReactComponentClass(c);  //OK
+acceptsReactComponentClass(d);  //Not OK
+
+acceptsReactComponentClass(e);  //Not OK
+acceptsReactComponentClass(f);  //Not OK
+acceptsReactComponentClass(g);  //Not OK
+acceptsReactComponentClass(h);  //Not OK
+
+function acceptsReactFunctionComponent(value: React.FunctionComponent<{ user: User }>) {
+
+}
+
+acceptsReactFunctionComponent(a); //Not OK
+acceptsReactFunctionComponent(b); //OK
+
+acceptsReactFunctionComponent(c); //Not OK
+acceptsReactFunctionComponent(d); //Not OK! <--❗
+
+acceptsReactFunctionComponent(e); //Not OK
+acceptsReactFunctionComponent(f); //Not OK
+acceptsReactFunctionComponent(g); //Not OK
+acceptsReactFunctionComponent(h); //Not OK
+```
+
+Note that d - (FunctionComponentThatReturnsString) is not considered a `Rect.FunctionComponent`! 
+
+Drilling into this further: 
+
+Debug2.tsx
+
+```typescript
 type User = {
     id: string; 
     name: string; 
@@ -151,26 +324,29 @@ type UserPanelProps = {
     user: User; 
 }
 
+// Function component that returns JSX
 export const UserPanel1 = (props: UserPanelProps) => {
     return <div> 
         {props.user.name}
     </div> 
 }
 
+// Function component that returns A string
 export const UserPanel2 = (props: UserPanelProps) => {
     return props.user.name;
 }
 
+// Function component that returns a fragment
 export const UserPanel3 = (props: UserPanelProps) => {
     return <>props.user.name</>
 }
 
-
+// Function component that returns null
 export const UserPanel4 = (props: UserPanelProps) => {
     return null;
 }
 
-
+// Class component that returns a string
 class UserPanel5 extends React.Component<UserPanelProps> {
     render() {
         return this.props.user.name; 
@@ -202,125 +378,11 @@ const Main = () => {
 }
 ```
 
-To be clear about what we mean here - take four kinds of 'UserPanel' components: 
+###  FFFFFUUUUUU🤬 🤬 🤬
 
-```typescript
+Here we do encounter quite an annoying thing in the typing of React - a `React.FunctionComponent` must return a `React.ReactElement` whereas a `React.ClassComponent` can return the wider `React.ReactNode`
 
-// Class component
-type User = {
-    name: string; 
-    id: string; 
-    imgSrc: string; 
-}
-
-
-// Class component
-class ClassBasedUserPanel extends React.Component<{user: User}> {
-    render() {
-        return <div>{this.props.user.name}</div>; 
-    }
-}
-
-// Class component that returns a string
-class ClassBasedUserPanelThatReturnsString extends React.Component<{user: User}>  {
-    render() {
-        return this.props.user.name;
-    }; 
-}
-
-
-// Function component
-const FunctionBasedUserPanel = (props: {user: User})=> {
-    return <div>{props.user.name} </div>; 
-}
-
-// Function component that returns a string
-const FunctionBasedUserPanelThatReturnsString = (props: {user: User})=> {
-    return props.user.name; 
-};
-
-
-// Directly referencing the component itself
-
-// TypeScript is not being very helpful here!
-const a = ClassBasedUserPanel;  //const a: typeof ClassBasedUserPanel
-const b = FunctionBasedUserPanel; 
-// const b: (props: {
-//     user: User;
-// }) => JSX.Element
-
-const c = ClassBasedUserPanelThatReturnsString; //const a2: typeof ClassBasedUserPanelThatReturnsString
-
-const d = FunctionBasedUserPanelThatReturnsString; 
-//const b2: (props: {
-//    user: User;
-//}) => string
-
-
-
-// Referencing output of the components
-const e = new ClassBasedUserPanel({user: {name: "hello", id: "1", imgSrc:""}}).render();  //const a: JSX.Element
-const f = FunctionBasedUserPanel({user: {name: "hello", id: "1", imgSrc:""}});    //const b: JSX.Element
-
-const g = new ClassBasedUserPanelThatReturnsString({user: {name: "hello", id: "1", imgSrc:""}}).render(); //const e: string
-const h = FunctionBasedUserPanelThatReturnsString({user: {name: "hello", id: "1", imgSrc:""}}); //const f: string
-
-
-
-
-function acceptsReactComponentType(value: React.ComponentType<{user:User}>) {
-
-}
-
-acceptsReactComponentType(a); //OK
-acceptsReactComponentType(b); //OK
-acceptsReactComponentType(c); //OK
-acceptsReactComponentType(d); // Not OK!  <--❗
-
-acceptsReactComponentType(e);   //Not OK
-acceptsReactComponentType(f);   //Not OK
-acceptsReactComponentType(g);   //Not OK
-acceptsReactComponentType(h);   //Not OK
-
-function acceptsReactComponentClass(value: React.ComponentClass<{user: User}>) {
-
-}
-
-acceptsReactComponentClass(a);  //OK
-acceptsReactComponentClass(b);  //Not OK
-
-acceptsReactComponentClass(c);  //OK
-acceptsReactComponentClass(d);  //Not OK
-
-acceptsReactComponentClass(e);  //Not OK
-acceptsReactComponentClass(f);  //Not OK
-acceptsReactComponentClass(g);  //Not OK
-acceptsReactComponentClass(h);  //Not OK
-
-function acceptsReactFunctionComponent(value: React.FunctionComponent<{user: User}>) {
-
-}
-
-acceptsReactFunctionComponent(a); //Not OK
-acceptsReactFunctionComponent(b); //Not OK <-- ❗
-
-acceptsReactFunctionComponent(c); //Not OK
-acceptsReactFunctionComponent(d); //Not OK! <--❗
-
-acceptsReactFunctionComponent(e); //Not OK
-acceptsReactFunctionComponent(f); //Not OK
-acceptsReactFunctionComponent(g); //Not OK
-acceptsReactFunctionComponent(h); //Not OK
-
-```
-
-`React.ComponentClass` has more generic parameters than `React.FunctionComponent`, because it has a generic parameter for state. 
-
-### Fffffffffuuuuuuuuuu
-
-So here we do encounter quite an annoying thing in the typing of React - a `React.FunctionComponent` must return a `ReactElement` whereas a `React.ClassComponent` can return the wider `React.ReactNode`
-
-And this is quite a pain for if you want to do something like typing render props, or HOCs, so lets circle around to this. 
+And this is quite a pain for if you want to do something like typing render props, or HOCs.
 
 (see debug.tsx)
 
@@ -330,8 +392,35 @@ I've asked a question here: https://stackoverflow.com/questions/68265095/is-ther
 
 ~~I'm leaning towards that we would define our own type that has the 'wider' function component typing.~~
 
-It seems like the best thing to do is _always_ make a React component return a ReactElement, and if you are really trying to return a string, make sure you wrap in a fragment. 
+It seems like the best thing to do is _always_ make a React component return a `React.ReactElement`, and if you are really trying to return a string, make sure you wrap in a fragment. 
 
+See debug3.tsx
+
+```typescript
+
+class ComponentA extends React.Component {
+    render() {
+        return "aaa"; 
+    }
+}
+
+const ComponentC = () : React.ReactElement => {
+    //Type 'string' is not assignable to type 'ReactElement<any, string | JSXElementConstructor<any>>'.ts(2322)
+    return "aaa"; 
+}
+
+const ComponentD = () : React.ReactElement => {
+    return <> aaa </>
+}
+
+const Main2 =  () => {
+    return <div> 
+        <ComponentA/> 
+        <ComponentD/>
+    </div>;
+
+}
+```
 
 ## React.Component 
 
@@ -720,6 +809,7 @@ One reason to not use Enzyme.
 https://github.com/enzymejs/enzyme/issues/2190
 https://github.com/enzymejs/enzyme/issues/1852
 
+Also, this isn't really anything to do with TypeScript. 
 
 
 ## Summary 

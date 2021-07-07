@@ -10,26 +10,29 @@ type UserPanelProps = {
     user: User; 
 }
 
+// Function component that returns JSX
 export const UserPanel1 = (props: UserPanelProps) => {
     return <div> 
         {props.user.name}
     </div> 
 }
 
+// Function component that returns A string
 export const UserPanel2 = (props: UserPanelProps) => {
     return props.user.name;
 }
 
+// Function component that returns a fragment
 export const UserPanel3 = (props: UserPanelProps) => {
     return <>props.user.name</>
 }
 
-
+// Function component that returns null
 export const UserPanel4 = (props: UserPanelProps) => {
     return null;
 }
 
-
+// Class component that returns a string
 class UserPanel5 extends React.Component<UserPanelProps> {
     render() {
         return this.props.user.name; 

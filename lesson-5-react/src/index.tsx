@@ -38,6 +38,7 @@ const FunctionBasedUserPanelThatReturnsString = (props: { user: User }) => {
 };
 
 // Directly referencing the component itself
+// Note how TypeScript is inferring the type. 
 
 // TypeScript is not being very helpful here!
 const a = ClassBasedUserPanel;  //const a: typeof ClassBasedUserPanel
@@ -65,7 +66,53 @@ const h = FunctionBasedUserPanelThatReturnsString({ user: { name: "hello", id: "
 
 console.log(JSON.stringify(a) === JSON.stringify(b)); // true
 
+/**
+ * ReactElement vs ReactNode vs JSX.Element
+ */
 
+
+
+ function acceptsReactElement(value: React.ReactElement) {
+
+}
+acceptsReactElement(a);     // Not OK
+acceptsReactElement(b);     // Not OK
+acceptsReactElement(c);     // Not OK
+acceptsReactElement(d);     // Not OK
+
+acceptsReactElement(e);     //OK
+acceptsReactElement(f);     //OK
+acceptsReactElement(g);     //Not OK
+acceptsReactElement(h);     //Not OK
+
+function acceptsJsxElement(value: JSX.Element) {
+
+}
+
+acceptsJsxElement(a);     // Not OK
+acceptsJsxElement(b);     // Not OK
+acceptsJsxElement(c);     // Not OK
+acceptsJsxElement(d);     // Not OK
+
+acceptsJsxElement(e);     //OK
+acceptsJsxElement(f);     //OK
+acceptsJsxElement(g);     //Not OK
+acceptsJsxElement(h);     //Not OK
+
+
+function acceptsReactNode(value: React.ReactNode) {
+
+}
+
+acceptsReactNode(a);     // Not OK
+acceptsReactNode(b);     // Not OK
+acceptsReactNode(c);     // Not OK
+acceptsReactNode(d);     // Not OK
+
+acceptsReactNode(e);     //OK
+acceptsReactNode(f);     //OK
+acceptsReactNode(h);     //OK
+acceptsReactNode(g);     //OK
 
 
 function acceptsReactComponentType(value: React.ComponentType<{ user: User }>) {
@@ -129,44 +176,7 @@ acceptsReactComponent(new ClassBasedUserPanel({ user: { name: "hello", id: "1", 
 
 
 
-/**
- * ReactElement vs ReactNode vs JSX.Element
- */
 
-
-
-function acceptsReactElement(value: React.ReactElement) {
-
-}
-acceptsReactElement(a);     // Not OK
-acceptsReactElement(b);     // Not OK
-acceptsReactElement(e);     //OK
-acceptsReactElement(f);     //OK
-acceptsReactElement(g);     //Not OK
-acceptsReactElement(h);     //Not OK
-
-function acceptsJsxElement(value: JSX.Element) {
-
-}
-
-acceptsJsxElement(a);     // Not OK
-acceptsJsxElement(b);     // Not OK
-acceptsJsxElement(e);     //OK
-acceptsJsxElement(f);     //OK
-acceptsJsxElement(g);     //Not OK
-acceptsJsxElement(h);     //Not OK
-
-
-function acceptsReactNode(value: React.ReactNode) {
-
-}
-
-acceptsReactNode(a);     // Not OK
-acceptsReactNode(b);     // Not OK
-acceptsReactNode(e);     //OK
-acceptsReactNode(f);     //OK
-acceptsReactNode(h);     //OK
-acceptsReactNode(g);     //OK
 
 
 /**
