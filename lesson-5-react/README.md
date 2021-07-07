@@ -489,6 +489,8 @@ But also, I think needs more investigation, lets circle back in a future iterati
 
 ## Accepting only children of a certain type
 
+For example, say you had a `TableRow` component, you might want to only allow `TableCell` content as children. 
+
 This is possible. But we will leave this for another day. 
 
 
