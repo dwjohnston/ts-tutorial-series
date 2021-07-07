@@ -73,6 +73,7 @@ export const App2 = () => {
 
 
 // Exercise 3 - Add typings that make sense
+// You will need to change function implementation in one place. 
 
 
 type User = {
@@ -159,15 +160,12 @@ const App4 = () => {
 </div>
 }
 
-const App5 = () => {
-
-    return 
-}
 
 
 // Exercise 5 
 
 // Change the typing to fix the type errors. 
+// You will need to change function implementation in one place. 
 
 const Title1 = () => {
     return <div>Hello World!</div>;

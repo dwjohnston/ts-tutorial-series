@@ -11,5 +11,5 @@ const OtherComponent = () => {
 }
 
 console.log(<MyComponent name ="foo"/>); 
-console.log(<OtherComponent/>); \
+console.log(<OtherComponent/>);
 

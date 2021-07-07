@@ -590,13 +590,21 @@ Often we will need to set the generic parameter when using the `useState` functi
 eg: 
 
 ```typescript
+const MyComponentWithState = () => {
 
-const MyComponent = () => {
+    const [name, setName] = React.useState(null);
 
-    const [name, setName] = useState(null); 
-
-    return <input value = {name} onChange = {(e) => setName(e.target.value)}>
+    //Argument of type 'string' is not assignable to parameter of type 'SetStateAction<null>'.ts(2345)
+    return <input defaultValue='' onChange={(e) => setName(e.target.value)} />
 }
+
+
+const MyComponentWithState2 = () => {
+
+    const [name, setName] = React.useState<null | string>(null);
+    return <input defaultValue='' onChange={(e) => setName(e.target.value)} />
+}
+
 ```
 
 ## Leaf elements are typed
