@@ -1,12 +1,12 @@
-
+/**
+ * VARIABLE REASSIGNMENT
+ */
 
 const foo = {
     name: 'bob'
 }; 
 
 console.log(foo); 
-
-
 
 try {
     // This will give a runtime error!
@@ -17,10 +17,19 @@ try {
 }catch(err) {
     console.log(err);
 }
-    
+
+/**
+ * OBJECT MUTATION
+ */
+
 // But object _mutation_ is A-OK.
 foo.name = 'alice'; 
 console.log(foo);
+
+
+/**
+ * OBJECT.FREEZE
+ */
 
 //of course, you can use Object.freeze to prevent mutation. 
 
@@ -34,8 +43,6 @@ console.log(foo2);
 
 
 // But object.freeze is shallow
-
-
 const bar = {
     name: "foo", 
     obj: {
