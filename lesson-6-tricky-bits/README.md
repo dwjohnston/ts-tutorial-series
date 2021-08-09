@@ -404,4 +404,141 @@ https://stackoverflow.com/questions/59148208/function-could-be-instantiated-with
 
 ## Object literals and excess property checking
 
+**Object literal** - An object literal is when you create an object using the curly brackets syntax in JavaScript. 
+
+```javascript
+const foo = {}; // Object literal
+
+const bar = new Date(); // Not an object literal 
+```
+
+ https://stackoverflow.com/questions/68718869/what-is-an-object-literal-in-typescript
+
+**Excess property checking** 
+
+Excess property checking means that TypeScript will give errors if an object literal contains additional properties than a type it is being assigned to. 
+
+The rational for excess property checking is that any extra property was probably a mistake by the developer. 
+
+See the example given in the [official documentation](https://www.typescriptlang.org/docs/handbook/interfaces.html#excess-property-checks): 
+
+```typescript
+interface SquareConfig {
+  color?: string;
+  width?: number;
+}
+ 
+function createSquare(config: SquareConfig): { color: string; area: number } {
+  return {
+    color: config.color || "red",
+    area: config.width ? config.width * config.width : 20,
+  };
+}
+ 
+let mySquare = createSquare({ colour: "red", width: 100 });
+Argument of type '{ colour: string; width: number; }' is not assignable to parameter of type 'SquareConfig'.
+  Object literal may only specify known properties, but 'colour' does not exist in type 'SquareConfig'. Did you mean to write 'color'?
+```
+
+In this scenario, `color` is optional, but the developer as made a typo with `colour`, which is an _excess property_ and TypeScript gives an error. 
+
+
+_Excess property checking will only occur immediately at assignment_
+
+```typescript
+type Foo = {
+    a: string; 
+}
+
+function usesFoo(value: Foo) {
+
+}
+
+function usesFoo2<T extends Foo> (value: T) {
+
+}
+
+const a : Foo = {
+    a: "one", 
+    b: 2, //  Object literal may only specify known properties, and 'b' does not exist in type 'Foo'.(2322)
+
+}; 
+
+const b = {
+    a: "one", 
+    b: 2, 
+}; 
+
+
+const c : Foo = {
+    a: "one", 
+    b: 2,
+} as Foo; // Coercing will remove the excess type error 
+
+usesFoo(b); // No error here!
+usesFoo2(b); // No error here!
+
+usesFoo({
+    a: "one", 
+    b: 2    //  Object literal may only specify known properties, and 'b' does not exist in type 'Foo'.(2345)
+}); 
+
+usesFoo2({
+    a: "one", 
+    b: 2    // No error here!
+}); 
+```
+
+**nb.** It seems pretty reasonable to allow an object to contain excess properties, for example: 
+
+```typescript
+function greetPerson(person: {name: string}) {
+    console.log("Hello", person.name); 
+}
+```
+
+In this scenario the only properties a person object needs to have is `name` - but its imaginable that there's a lot more information on the object that is relevant elsewhere. 
+
+_However_ do note that when using things like `Object.keys` or the spread operator, you might run into problems. 
+
+```typescript 
+type Bar = {
+    a: string; 
+};
+
+type Chaz = {
+    a: string, 
+    c: "zip" | "zap"
+}
+
+function usesBar(value: Bar, c: "zip" | "zap") : Chaz {
+    return {
+        c, 
+        ...value, // The excess properties will clobber the c value!
+    }; 
+}
+
+const d = {
+    a: "hello", 
+    c: "blah blah blah"
+}; 
+
+const e = usesBar(d, "zip"); 
+
+console.log(e);
+// {
+//  "c": "blah blah blah",
+//  "a": "hello"
+// }
+
+```
+
+There are no type errors in this code, but at run time the typings are no longer correct - the value of `e.c` is `blah blah blah`. 
+
+This appears to be a limitation of TypeScript, and moral of the story is be careful when using spread operator (put the spread first?). 
+
+This discussion also shows how to create a utility type to always check for excess properties: 
+
+https://stackoverflow.com/questions/54775790/forcing-excess-property-checking-on-variable-passed-to-typescript-function
+
 https://stackoverflow.com/questions/68358195/function-that-returns-a-type-behaves-differently-if-it-is-a-property-of-an-objec/68358441?noredirect=1#comment120812454_68358441
