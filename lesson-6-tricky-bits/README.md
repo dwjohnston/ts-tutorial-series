@@ -542,3 +542,9 @@ This discussion also shows how to create a utility type to always check for exce
 https://stackoverflow.com/questions/54775790/forcing-excess-property-checking-on-variable-passed-to-typescript-function
 
 https://stackoverflow.com/questions/68358195/function-that-returns-a-type-behaves-differently-if-it-is-a-property-of-an-objec/68358441?noredirect=1#comment120812454_68358441
+
+
+## Exercise
+
+See `exercise.ts` - Fix the type errors. 
+

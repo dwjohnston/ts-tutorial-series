@@ -5,10 +5,17 @@
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf lib",
-    "build": "yarn clean && tsc"
+    "build": "yarn clean && tsc",
+    "test": "jest"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.5",
+    "@types/jest": "^27.0.0",
     "@types/react": "^17.0.16",
+    "babel-jest": "^27.0.2",
+    "jest": "^27.0.4",
+    "ts-node": "^10.0.0",
     "typescript": "^4.3.5"
   },
   "dependencies": {
