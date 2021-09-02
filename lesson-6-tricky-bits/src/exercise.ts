@@ -19,30 +19,27 @@ export async function postUser(user: Omit<User, "id">): Promise<User> {
 }
 
 
-// Finish implementing the functions
+// Fix the type errors.
 export async function createUser(firstName: string, lastName: string): Promise<User> {
-    const user = {
+    const userData = {
         firstName,
         lastName,
         role: "user",
     }
 
-    //postUser
-    //return user; 
-
-
+    const newUser = await postUser(userData);
+    return newUser; 
 }
 
 export async function createAdminUser(firstName: string, lastName: string): Promise<User> {
-    const user = {
+    const userData = {
         firstName,
         lastName,
         role: "admin",
-    }
+    }; 
 
-    //postUser
-    //return user
-
+    const newUser = await postUser(userData);
+    return newUser; 
 }
 
 
