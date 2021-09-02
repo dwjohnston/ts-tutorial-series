@@ -215,7 +215,11 @@ theObject.userType = "blah"
 
 TypeScript infers the value type of `userType` as the wider `string`, not `"admin"`. This is known as _type widening_. 
 
-There's a few ways we can get around this: 
+There's a few ways we can get around this. 
+
+### The `as const` keyword. 
+
+What the `as const` keyword does, is tell TypeScript to [infer to the typings as the narrowest possible](https://stackoverflow.com/questions/66993264/what-does-the-as-const-mean-in-typescript-and-what-is-its-use-case), rather than keeping them as the wider `string` type for example. 
 
 ### Declare the string as const 
 
@@ -287,11 +291,6 @@ const theObject6 = {
 
 usesAnObject(theObject6);
 ```
-
-The `as const` keyword doesn't mean "treat this as a non-reassignable variable" - It means "Keep the narrower inferences, not the wider ones" 
-
-https://stackoverflow.com/questions/66993264/what-does-the-as-const-mean-in-typescript-and-what-is-its-use-case
-
 
 Note that this occurs on _deep_ level: 
 
@@ -547,4 +546,6 @@ https://stackoverflow.com/questions/68358195/function-that-returns-a-type-behave
 ## Exercise
 
 See `exercise.ts` - Fix the type errors. 
+
+
 
