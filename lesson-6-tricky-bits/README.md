@@ -548,4 +548,8 @@ https://stackoverflow.com/questions/68358195/function-that-returns-a-type-behave
 See `exercise.ts` - Fix the type errors. 
 
 
+Some exercise reminders: 
+
+- It's ok to coerce types, we sometimes need to massage them, but not to do `as unknown as SomeType`. 
+
 
