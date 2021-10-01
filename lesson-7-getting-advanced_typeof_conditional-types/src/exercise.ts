@@ -28,7 +28,7 @@ doSomethingWithObject({
 
 
 /**ex.2 use an index access type to add typings to the function */
-function updateObjectProperties(obj: typeof myObject, newObjectProperties : typeof myObject['objectProperties']) {
+function updateObjectProperties(obj, newObjectProperties) {
 
     const newObj = {
         ...obj, 
