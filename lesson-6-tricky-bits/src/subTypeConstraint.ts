@@ -26,3 +26,34 @@ export function makeAdmin2<T extends SomeObject> (value: T) : {
         name: value.name
     }; 
 }
+
+
+
+type Bar = {
+    a: string; 
+};
+
+type Chaz = {
+    a: string, 
+    c: "zip" | "zap"
+}
+
+function usesBar(value: Bar, c: "zip" | "zap") : Chaz {
+    return {
+        c, 
+        ...value, // The excess properties will clobber the c value!
+    }; 
+}
+
+const d = {
+    a: "hello", 
+    c: "blah blah blah"
+}; 
+
+const e = usesBar(d, "zip"); 
+
+console.log(e);
+// {
+//  "c": "blah blah blah",
+//  "a": "hello"
+// }

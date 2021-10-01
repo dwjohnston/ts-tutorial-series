@@ -1,5 +1,17 @@
 # Lesson 7 - Getting advanced - The easy stuff. 
 
+In this lesson we are covering: 
+
+
+- The `typeof` keyword
+- Indexed acesss types 
+- Conditonal types
+- Function overloading
+- `is` predicates
+
+
+
+
 
 ## typeof 
 
@@ -25,6 +37,33 @@ type MyType = typeof someThing;
 ```
 
 **nb.** There is also a JavaScript `typeof` operator - They are not the same thing!
+
+
+## keyof 
+
+The `keyof` keyword will create a type that is _all of the keys_ of a type. We almost always use this when referring to a object type. 
+
+```
+type Foo = {
+    a: string; 
+    b: number; 
+}
+
+type KeyofFoo = keyof Foo; "a" | "b"; 
+```
+
+
+nb. `keyof` of things that are not object types will return a list of their properties!
+
+
+```typescript
+type Bar = "bar"; 
+type KeyofBar = keyof Bar; 
+//type KeyofBar = number | typeof Symbol.iterator | "toString" | "charAt" | "charCodeAt" | "concat" | "indexOf" | "lastIndexOf" | "localeCompare" | "match" | "replace" | "search" | "slice" | ... 35 more ... | "matchAll"
+```
+
+
+
 
 ## Indexed access types 
 
@@ -105,11 +144,11 @@ function myFunction2<T extends "foo" | "bar">(value : T) : T extends "foo" ? num
 
     if (value === "foo") {
         // return a random number
-        return Math.random(); 
+        return Math.random(); //Type 'number' is not assignable to type 'T extends "foo" ? number : string'.ts(2322)
     }
     if (value === "bar") {
         // Return a random string 
-        return Math.random() + ""; 
+        return Math.random() + ""; //Type 'number' is not assignable to type 'T extends "foo" ? number : string'.ts(2322)
     }
 
     throw new Error("We shouldn't have got here"); 
@@ -221,7 +260,66 @@ const value7 = myFunction4("bar"); //const value7: string
 ![mind blown](./assets/mind-blown-explosion.gif)
 
 
+![but](./assets/but.png)
+
+But you might be noticing, that what if we were adding `zip`, `zap`, `zing` `zerp`... etc? This is surely not particularly maintainable. We'll be talking about that in a later lesson about _mapped types_. 
 
 
-## Type predicates - (the `is` keyword)
+## Type predicates - (the `is` keyword), (also, the `in` keyword)
+
+An `is` predicate is essentially just a function that returns a boolean. But what it's really doing is providing a before-compile time hint to TypeScript to allow it to make inferences. 
+
+As an example: 
+
+
+```typescript
+type Student = {
+    id: string; 
+    year: number; 
+}
+
+type Teacher = {
+    id: string; 
+    department: "Science" | "Math" | "English"; 
+}
+
+
+
+function grantAccess(person: Student | Teacher) {
+
+    //Typescript doesn't like this, which is kind of annoying
+    if (person.department) {
+
+    }
+
+    if ("department" in person) {
+        //TypeScript is ok with this. 
+        // But you can imagine this not working in some scenarios
+    }
+}
+```
+
+
+Alternative way to do it, is with an type predicate 
+
+
+```typescript 
+
+function personIsTeacher(person: Student | Teacher) : person is Teacher {
+    return ("department" in person); 
+}
+
+function grantAccess2(person: Student | Teacher) {
+    if(personIsTeacher(person)) {
+        // This is more readable too
+        console.log(person.department);
+    }
+}
+```
+
+
+What's happening here is that we are saying "if, at run time, this function returns true, then at compile time, we can treat the object as a `Teacher`". 
+
+
+
 

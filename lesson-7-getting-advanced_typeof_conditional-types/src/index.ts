@@ -11,6 +11,26 @@ type MyType = typeof someThing;
 //}
 
 
+type Foo = {
+    a: string; 
+    b: number; 
+}
+
+type KeyofFoo = keyof Foo; 
+const a  : KeyofFoo = "a"; 
+const b  : KeyofFoo = "b"; 
+const c  : KeyofFoo = "c"; //Type '"c"' is not assignable to type 'keyof Foo'.ts(2322)
+
+
+
+type Bar = "bar"; 
+type KeyofBar = keyof Bar; 
+//type KeyofBar = number | typeof Symbol.iterator | "toString" | "charAt" | "charCodeAt" | "concat" | "indexOf" | "lastIndexOf" | "localeCompare" | "match" | "replace" | "search" | "slice" | ... 35 more ... | "matchAll"
+
+
+
+
+
 function myFunction(value : "foo" | "bar") {
 
     if (value === "foo") {
