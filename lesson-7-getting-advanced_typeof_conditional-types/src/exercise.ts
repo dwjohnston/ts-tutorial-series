@@ -66,24 +66,55 @@ const newObj3 = updateObjectProperties({
 
 
 
-/**ex.3 use an index access type _and_ the keyof keyword to return the value of an object property*/
+/**ex.3 
+ *  The function below takes an object of shape PossibleProperties, and a key of the possible properties ("a" | "b" | "c")
+ *  And returns the value. 
+ * 
+ *  You need the make the return type of the function to be properly type. 
+ * 
+ *  Note! This is quite an advanced challenge! 
+ * 
+ * You need to use: 
+ * 
+ * - Generics
+ * - An index type
+ * - The keyof operator 
+ * */
 
 
-function getObjectProperty(obj, key) {
-    return obj.objectProperties[key]; 
+type PossibleProperties = {
+    a: string; 
+    b: number; 
+    c: {
+        foo: string; 
+        bar: number; 
+    }
+}; 
+
+
+function getObjectProperty (properties , key) {
+    return properties[key]; 
 }
 
+const properties: PossibleProperties  = {
+    a: "hello",
+    b: 99, 
+    c: {
+        foo: "fooby", 
+        bar: 11
+    }
+}; 
 
 //correct usage
-const r1: string = getObjectProperty(myObject, "color");
+const r1: string = getObjectProperty(properties, "a");
 
 //incorrect - the key is bad
 //@ts-expect-error
-const r2: string = getObjectProperty(myObject, "foo");
+const r2: string = getObjectProperty(properties, "foo");
 
 //incorrect the return type should typed
 //@ts-expect-error
-const r3 :number = getObjectProperty(myObject, "color");
+const r3 :number = getObjectProperty(properties, "a");
 
 
 
