@@ -9,3 +9,5 @@ https://github.com/microsoft/TypeScript/issues/21760
 
 ## Type Guards don't work on generics 
 
+## Errors aren't typed / No checked exceptions. 
+
