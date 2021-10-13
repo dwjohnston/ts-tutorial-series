@@ -5,14 +5,14 @@ Let's pick up in a similar place as where we left off in Lesson 7.
 
 To let's say we have some different event types: 
 
-```
+```typescript
 type PossibleEventTypes = "foo" | "bar" | "biz"; 
 ```
 
 And each of those event types have their own payload: 
 
 
-```
+```typescript
 type FooPayload = {
     name: string; 
     age: number; 
@@ -35,29 +35,22 @@ type BizPayload = {
 type PossibleEventPayloads = FooPayload | BarPayload | BizPayload; 
 ```
 
-
-
 And now lets say we are going to create a function that creates a default payload, for a given event type. 
 
 You'll recall we can't do: 
 
-```
-function badGenerateDefaultEventPayload(eventType: PossibleEventTypes) : PossibleEventPayloads{
-
-}
-```
-
-As TypeScript won't _discriminate_ (TODO: check terminology) the return type based the input type: 
-
-```
+```typescript
 function badGenerateDefaultEventPayload(eventType: PossibleEventTypes) : PossibleEventPayloads{
 
 }
 
 const z0 = badGenerateDefaultEventPayload("foo"); 
+
 //Property 'name' does not exist on type 'FooPayload | BarPayload | BizPayload'.
 console.log(z0.name); 
 ```
+
+As TypeScript won't _discriminate_ (TODO: check terminology) the return type based the input type.
 
 That is - TypeScript isn't narrowing the return type based on what `PossibleEventType` you gave it. The return type is always the union of all the possible payloads. 
 
@@ -67,7 +60,7 @@ That is - TypeScript isn't narrowing the return type based on what `PossibleEven
 Instead, we use function overloading, like we did in lesson 7: 
 
 
-```
+```typescript
 function generateDefaultEventPayload(eventType: "foo") : FooPayload;  
 function generateDefaultEventPayload(eventType: "bar") : BarPayload; 
 function generateDefaultEventPayload(eventType: "biz") :  BizPayload; 
@@ -123,12 +116,13 @@ We would make the following changes:
 1. Add `"bash"` to the `PossibleEventTypes`
 2. Declare the `BashPayload`
 3. Add an additional overload to the function
-4. Update the bottom function declaration to include the `BashPayload` return type. 
+4. Update the bottom function declaration to include the `BashPayload` return type.
+5. Update the function implementation to return the the default data.  
 
 
-But to really drive the point home, let's also say that we have a data type `MyEvent`: 
+But to really drive the point home, let's also say that we have a data type `PossibleEvents`: 
 
-```
+```typescript
 type PossibleEvents = {
     eventType: "foo", 
     payload: FooPayload, 
@@ -143,15 +137,27 @@ type PossibleEvents = {
 
 ```
 
-And a function `processAndExtractPayload`: 
+And a function `processEvent`: 
 
 
-```
-function processAndExtractPayload(event: PossibleEvents)  {
+```typescript
+function processEvent(event: PossibleEvents) : FooPayload | BarPayload | BizPayload {
 
-    console.log(event); 
+    const {eventType, payload} = event; 
+    if (eventType === "foo") {
+        console.log(payload.name); 
+    }
 
-    return event.payload; 
+    if (eventType === "bar") {
+        console.log(payload.description.longDescription); 
+    }
+
+    if (eventType === "biz") {
+        console.log(payload.type); 
+    }
+
+
+    return payload;
 }
 
 ```
@@ -159,23 +165,21 @@ function processAndExtractPayload(event: PossibleEvents)  {
 
 So to properly type this, we can repeat the same function overloading process: 
 
-```
-
-function processAndExtractPayload(event: {
+```typescript
+function processEvent(event: {
     eventType: "foo", 
     payload: FooPayload, 
 } ) : FooPayload; 
-function processAndExtractPayload(event: {
+function processEvent(event: {
     eventType: "bar", 
     payload: BarPayload, 
 } ) : BarPayload; 
-function processAndExtractPayload(event: {
+function processEvent(event: {
     eventType: "biz", 
     payload: BizPayload, 
 } ) : BizPayload; 
-function processAndExtractPayload(event: PossibleEvents)  : FooPayload | BarPayload | BizPayload   {
-    console.log(event); 
-    return event.payload; 
+function processEvent(event: PossibleEvents)  : FooPayload | BarPayload | BizPayload   {
+     //Snip
 }
 
 const b1 = processAndExtractPayload({
@@ -211,7 +215,7 @@ Instead we should declare these relationships in one place, and use that in all 
 This is what I call a *type map* and it looks like this.    (TODO: check terminology)
 
 
-```
+```typescript
 type EventNameToPayloadMap = {
     "foo": {
         name: string;
@@ -234,7 +238,7 @@ type EventNameToPayloadMap = {
 
 Now, note that we _could_ instantiate an object against this type: 
 
-```
+```typescript
 const myObject : EventNameToPayloadMap= {
     foo: {
         name: "a", 
@@ -260,7 +264,7 @@ Instead, the purpose of the type map is to derive other types.
 
 For example `PossibleEventTypes` can be derived like: 
 
-```
+```typescript
 type PossibleEventTypes = keyof EventNameToPayloadMap; 
 //type PossibleEventTypes = keyof EventNameToPayloadMap
 
@@ -270,10 +274,19 @@ const b: PossibleEventTypes = "bar";
 const c: PossibleEventTypes = "zip"; 
 ```
 
-Now, unfortunately your mouseover intellisense loses a bit of information. If we look at our old `PossibleEventTypes` we get: 
 
+### Losing Intellisense
+Now, unfortunately your mouseover intellisense loses a bit of information.
 
+```typescript 
+type PossibleEventTypes = keyof EventNameToPayloadMap; 
+//type PossibleEventTypes = keyof EventNameToPayloadMap
 ```
+
+ If we look at our old `PossibleEventTypes` we get: 
+
+
+```typescript
 type PossibleEventTypes = "foo" | "bar" | "biz"; 
 //type PossibleEventTypes = "foo" | "bar" | "biz"
 ```
@@ -282,18 +295,21 @@ Which is _a lot_ more readable, it's a lot easier to understand what the type is
 
 Fortunately, there's an easy trick to solve this - we just add an `& string` type intersection: 
 
-TODO: Find out why this is. 
 
 
-```
+
+```typescript
 type PossibleEventTypes = keyof EventNameToPayloadMap & string; 
 //type PossibleEventTypes = "foo" | "bar" | "biz"
 ```
 
+[See this StackOverflow question for why this works](https://stackoverflow.com/questions/69547866/why-does-adding-string-fix-improve-the-intellisense-of-keyof)
+
+
 The `PossibleEventPayloads` can be derived in a similar manner: 
 
 
-```
+```typescript
 type PossibleEventPayloads = EventNameToPayloadMap[PossibleEventTypes]; 
 // type PossibleEventsPayloads = {
 //     name: string;
@@ -315,7 +331,7 @@ So that's a bit of a tidy up, so how do declare our functions using these types?
 
 Well we still can't just do a naive 
 
-```
+```typescript
 function badGenerateDefaultEventPayload(eventType: PossibleEventTypes) : PossibleEvents{
 
 }
@@ -329,13 +345,9 @@ Instead, we can start using a _generic_ to discriminate the return type.
 
 Now we might think that this would work: 
 
-
-
-```
+```typescript
 
 function generateDefaultEventPayload_v1<T extends PossibleEventTypes>(eventType: T) : EventNameToPayloadMap[T] {
-    
-
     if (eventType === "foo") {
         //Type '{ name: string; age: number; }' is not assignable to type 'EventNameToPayloadMap[T]'.
         return {
@@ -371,7 +383,7 @@ function generateDefaultEventPayload_v1<T extends PossibleEventTypes>(eventType:
 
 To explain what we are doing here: 
 
-1. We introduce a generic parameter T, which is going to be `PossibleEventTypes` or `"foo" | "bar" | "biz"`. 
+1. We introduce a generic parameter `T`, which is going to be `PossibleEventTypes` or `"foo" | "bar" | "biz"`. 
 2. The function parameter `eventType` is going be of this type `T`. 
 3. The return type, we are referencing via a _type index_ (TODO check terminology) on our original type map. 
 
@@ -381,7 +393,7 @@ Now the first thing is, we're getting this issue where _type guards_ don't work 
 So as a workaround, let's a do a type coercion. 
 
 
-```
+```typescript
 function generateDefaultEventPayload_v2<T extends PossibleEventTypes>(eventType: T) : EventNameToPayloadMap[T] {
     
 
@@ -423,17 +435,14 @@ console.log(r1.age);
 console.log(r1.value); 
 ```
 
-
-This works - we can see the TypeScript knows that the return type is one for the corresponding event type. 
-
+This works - we can see the TypeScript knows that the return type is one for the corresponding event type. Although the type coercion is a bit icky. 
 
 So now lets move on to other function: 
 
+First, we want to declare our event, which includes both the event type, and the payload, as a generic, this means that the `eventType` and the `payload` will be in sync with each other: 
 
-First, we want to declare our event, which includes both the event type, and the payload, as a generic: 
 
-
-```
+```typescript
 type OurEvent<T extends PossibleEventTypes> = {
     eventType: T; 
     payload: EventNameToPayloadMap[T];
@@ -478,7 +487,7 @@ Ok great, so we've got `OurEvent` type working fine.
 
 Btw, if we want to derive the `PossibleEvents`  union type, we just pass the the wider `PossibleEventTypes` as the generic argument. 
 
-```
+```typescript
 type PossibleEvents = OurEvent<PossibleEventTypes>; 
 
 // type AllPossibleEvents = {
@@ -499,12 +508,11 @@ type PossibleEvents = OurEvent<PossibleEventTypes>;
 // }
 ```
 
-Now we can implement our `processAndExtractPayload` in a similar fashion: 
+Now we can implement our `processEvents` in a similar fashion: 
 
-```
+```typescript
 function processAndExtractPayload<T extends PossibleEventTypes>(event: OurEvent<T>)  : OurEvent<T>['payload']  {
-    console.log(event); 
-    return event.payload; 
+    //snip
 }
 
 const b1 = processAndExtractPayload({
@@ -521,14 +529,173 @@ console.log(b1.value);
 ```
 
 
-
-So at this point I'm hoping you're on board with the value of using type maps, now let's throw a more tricky problem at you. 
-
+So at this point it should be clear the advantage that using type maps provides - it's a lot more maintainable and concise than function overloading everywhere. 
 
 
-
-https://www.typescriptlang.org/play?#code/C4TwDgpgBAogbhAdsAcgQwLYQCoHsAKaIANrmgCYCyaYUAvFAN4BQUbUARAGa64cBcTVuxGJMEQQGdgAJwCWiAOYBuYSLZpFEqIgCuGAEYQZqkQF9T7DgbQyBQ9ezhpiu7XsPHLj8hEkBjeTBgOVxEQRZHR0kAC1wZYAARP0C5YNDwqGl5JW8otlIlZICgkLCpWQUVNXUzGosa6zkAL3tIqNBIQWtXGTAOKAAfTl8+jjyRYAgAD2AKnOrzZjrmZn8w6SgMEAB5AwArCH9gKEF4JFRxPEISMioaBna2HlwImtFxbrQOABood-Ymm0AEZQX96uCRDYZIIHFFnK5tABOFGQqK+EppMqZJ75LJxBLFVLpcqcX7-PHsQqKImlDLdDgAth1cxotgGFpvfKdbQ9XRjNnqKazL7ferLVaSnlQfC4SSSOQGYgQc7IbDgPz0KAAawgIFwXFgCGQ6Cw1yIpAo1FoADIspVcv8APRO6Wy+WK5Wq4DqyCSLXcXgDYbWWzBzgc1qS9aITZoQTuhVKlXGn0a-0MQN8ZT-GObAwJuVJr2p32azPQ8bOp1lqAAcg4zTSHDrUDk-sQuBOaA9ijEyagwFwg419d1+sN3tNOAIFru1rrADoABQAJgAzKvVwBKNYbE7+Qse5PessZzhN-o51ZuouelMXG6W8jnqdXWe3K00ADaifvp-TABda8XRHSAZTvE9U0kJ87nPFhQI+LB5iqVREMBLRBA8IwTGYUCzCGIR0LYBE3Cw-QcLQp11AxYlsTeYj1FieIkhSOlSWyVC8Oo-JqVpLF6XtBYqNqESCOGBCePYHluiVfl+kIjhRivbihRmOYhK4-DJWYLhdEQY4MigLREGMNApmSLg0F0YhgG9WCKAAfTgYEAB5sCgdSkBfCDjxLC4zwAPmXCBSw1QRsG3U4jQuadzU-e4wG-bBALhNhVhEORDRCsLwLofLOBeDgotxEQXVrOtGB0T5NMdIFyM8EwoDMVt2x0LsoB7BU+zQAchzA6A6zfM0P2fa1ksApcmSgGQIGAflEDSvExGQiNcAMclppEeqoFRCkogsfbmQy9gsqgHKAtHfKKzDErpvK0dKqgUj3AorwoFo9icXxFj+JJTJOMdPi2IEjiHRUZqcxatsOw6rq5B6vrh2lIbUzi0b5x-FKpvyWb5pkRbSvhFwyN2pFBXyT7QZxLaomYwkQf+7p6ZOWjNspRxgcxJnOGpYwPpSX5aeO-IWXYFZMuy0LLrygqmlaO78ge8CnpkiNeivQd1JQx1obaztu17ftlUHZHHuGmcHMSiacaiPGFqW7lwvV+T2Y54UNI4YgXB973iEZUXxROthgBiGRcAAdx0CAo5gGRw5kc6OAAdWgZibPIdqThiNAEBmiA0H8GIIEz4vZuK1QVj0gzsWMpAzIsiArJsuzUyt5zV3czzZm8-0-ygmW-GC6W1WdyLoot+Kxqx1LcWDtspdy6BrsKoNFaiZXBqqlbtEBiGduw969dhw3uuN6B+pRyeMa-JLscXab7YJx2oh32T1rdykdr26aCJ7GKTTvituNFK14lg1DOhdUessbp2HXo4Te9YqovQapRAW3N6JMB+gzDBgk945i5nRPB4MoZQ1aifTqRteom0vubNGQC5y3xtg-XGc0HZE0cCgsmFN0SM0wRwvELM-qYI4CzdB-hP4cwKGEGkfDBJexkfzNmPxhbNV-pQgBlwRrAJnmA8W89IEjzTDAiMLRiovzYIg1Wzs+RjBzB7HWENj5Z0oWfahF8zYq2vjou+k0WF2zYc-ARkwbFyQFEdPEDjea+19gHA6GjvGMOtqAiJKwaih3DlHUysd47xCTqnH6GcXE5zzrNQuxdS7GAgBXCUqw8wnBkMCLUJkG4QEstZWy9kkkd2XFmCuuYNi4GVIuUgihlyNMXECbcIEnSLnwOHSACQQD1heq2cguBNQG27u2E4YQBpIOqqtfBnVMI6Dek1FqK4NzriRLuPMQyIAjNwGMiZL1pn-BvKOHY-JvRdy8ogHy-d-LQKHlqXERiywRT0WwMASSzj0O0UkkBwFljXj3LGE4EBgSCG+TIX5fTApgpqBCmxRVBSwoSlyV+NUOA9kkdtU5oJxSHTqfuTyq4cU-NTK5AlRKRAkq6KvPggoXTzNwIs0A9YgTkK2O2BUSg2yLRRtvGqxzoYGF0A0iAABHXQchZqZwUPsp6b9ar71OYfC5S41wAHYAAswJdwiApc+KljhTW0skJtZlaL6meXXJyvF3LeWPGJUvboZKIkuruG69QViqpq2OVEtVMqtnw0RjQzxW9Dm7xISc16jUyH+MpGrWx-QeGOCiV7GJfs4mODqCy9FmwIB2sDfiyMHBCWhv5eG0xrRyVwosUKUJGt6UdG1tEv2sTf6oo+cwW8fkHzIHPLi35QKl3GKHmi0C0oACCxBiDru9PBVSPbB5HmLBus8IlnWDskstVVJDT1RAPucm94tCL3vyFwy176fByNJF+jmQiAMAyfYxXiMjhHEOEs++tf7mqfrg8OwVZbwxKWMCpCD0kJ34OQw0bSqxq6GT2WAcO-g-CSF3QCmAswZCF2AFbP5PcAV90gsCzdkhh6pjbdy7AgUorRVXXxwK346zRooHWVKS17nDNGVA4A7yahP0WkYxcEnyDXhWH6gwTSGBkdwBR+U1HyC0dkAxq2y5wW9r6QOylQ6PUuDkBRsdGhTkomZUpptDynljN05MrQSnRULOMJKusqyPobIoTMHZUA9nKpzY4nMr7C3NWtdc253m5PPOXP5t5aKpSjnsvIeIchQDWj5VYIq0UOAxARjESRoY7DdDq4oBrgp5b2AURHRkja3QlfkCESQJdfkeX+YC9jV70xdqWgK7Q2BoWeTbgNsrIB4WPhW+V3RUbB2JISsirTrKMVQDANimUm32wjeDUVGb1nz1CskUY+ZoRBtrc4K19rNQNOxqQryOlFb82CCZUsRtfqwAcvOy9srl3TPXaDLdsN93bMRKe5tt73Wha3vswIxzXqAc7WB-ow6QA
-
+https://www.typescriptlang.org/play?#code/C4TwDgpgBAggRgZ2AJwIYGNgFEBuEB2wAcqgLYQAqA9gAqogA2VqAJgLKphQC8UA3gCgowqAG0A1hBAAuKEmQBLfAHMAurICu+cfioB3fAG4oAgL4CBoSLEQoMwGlQQIFcBhFwFgFcBAQAeCigIAA9gAhYEG3l7T0IScmo6RmZ2TgA+HihJECoAMygggDI5FCVlY0tfaLtMR2dXdziHeiZWAKDQ8PxImrRMZoTKWlbUjjBM3gpReBi6pxc3DzxCH0gO9NVKiytoWdrgABEIPNQNBhaU1gBxAgg0YCpkDuCwiKj9-uwV4jJh5LaaQmWUEIjEOSgSmyUnyhXUUAAFABKHiZaY5LYmcwCPJaTAKKj4KCoWxfW74e4KdDHU7nS6AwKvbq9T6xH5DJKjVjjAA0hWaa2gXXefXs9UWTR+go26QRYC5LHJ91Qj2eslZmBpZwuANSSoeTw2fIgUt8sgoAt8KPNogtpsgqn4QhE6EJSCg8quiruBuQWU9gP1KsNohNXkFmOdwmQEGAGmQRIDep9weQyMMZgsAld+HdpBAupuKdVUV4oJEACJUAwwAALVAV2TI1FOsFgmNxhOtts9044KjxhThADCVCYyFkFZjLArfKjbdMlTBpjnYIrcFjDabKO4mXLPY78aJ+57Ihw1Y0EFkAE5b3zT2358v5yvMxYc+6GABGLIkubAfUqS1OlCxYBF81AoMSz5Ksa3rCskQzLNdigQY-k5L1xhBecKzyKgqEbbse3wP5ZHkcoMwfVBlCvKB8A0UgN2QSiREXHC4FQZBCJPMFzwYS9ZHoxj7hYnsWD8dBFDAYACXwWQeNPBBayeI4JKkmTCTIsoVFEh8oCYFRjgQSSFGk2StMUHSn1Yl9dPXBQAC9uOs4RdknNx4zACsoAAHygCtxOQLzdLBcIwgsiiXzfbM3WAKB8wAeTgAArCBMCgWQ0MSEZMM4Mt5zwqh5JcujSP8htV1PajaK-WrKuEFcTDBDiJ2EBThD4gSoFva96rbcTjPU8yiL0pSVKMkyzM0-zZyavThAM5QJqG6aKwrErzGXPq4Ec4qHzc-yPKC2aSrC4BJ1QBsouxZDqnFRplnDXxS2hXICiy-4FSwkpyJ0kwAHp-pQ+6lktdYslw-DvL89dOOhw7HPW99YuJWQQclJ7wd4SGCMqD84rgNGFgesG-AhlqK0qQHBSgAByCsHNMitachKJdDi1AGmUEiligR4+eqWmclhD6MMBcZaYAOgRAAmABmGWZaRGLczi9AiYaUH7TJ7HGeCkwqmsdHHsIUCXtFnLxc4URjdJhBI0BgWjeJrWvAQM3sMdsESPICKrK9kRqsEhimIzR3TF8p0A46i9aKE0OBGjqABsmjS5Kj-7RuU5BVMG0y079ipE8zh9FuW-Pht+ouk7Y8PI8EJODvXfjjsjgL7mC4u2zOwuw8zm6cTxNOoBoikHggYCLmaUCAH0cC-RlhR6KJbe1hBZTDVYzUKa1UPZdDLbGa2KEdE8LDBBQCgRTfvGqbh7-8wqEJGsFqcFvhSt90pLIqYkaOD4SzEoCmBZgoNmVAOZcx5u4PmVAnbQFphbUC4xbSqCliVQ8XZ2pth9rRdcVA4AnXmsIIO3VepzR7IuChwDz4iEvoiG+NN77YwpiibBb9rC0w-p1OOIcRLJzUhXaaH8xo53LlNdOVdjBl0ERI3uwDjAgNZnRCBxIoEkhgfzFCiD97ZWQcfNBksMGxiPC-U8PCbzkJKmCFOK107YIfKI3OqdhoVicQI4yRDiFghkXnOR-lFr3A8egWc1ibIPk2jZec9Dr7ax4A-eyTk2ElQ4Qgj+Tcjr6x7t-CiwDQHgMgS4bmGjoBaMFkgr6Bj0EPkwceMJrlt7N08l4+a2SKwMGrJ0jpDB1oRKirQ1ytZkD6DohAPQqFkDDL9AiCsAB1aAY1zgsBUXFeseAoAxgwLWCAyztkxgQhmbEuJ8D4kJCPYsE8Tjam+F4WeOAZaLzeMvKAq9MZ+A3trc0u8Km5TAKgkaAzIRX0YXfBJT9kkPlSXTD+uD5GkPjvwpRYCVlqKKdA0pcDtE-Ktn8k+1TTy1LMcRMq+DCF9Sov-Mh5LWJqL3l4Dkh9uQGKXFEi+wK4nMMOnDCFp4oVcKgBYuifCgG2KEfYuQ2dnF2Pkb4lx00pEKLyco9mqKFDFN5mUzh2Kj64sMcYzsdTvGCrvNQh8or-EOMUpK8RBd-LuJTi07x+lCRLVkba9pLqgkOp5PUmhETaXaqZbqllDVAUxJBdYTliTn7sP+jTflGSW5ZK6PIpFBTVXqs0Zi8pujPq-NQfig8JisG+sTc06lPY2ndK6dWXpp4I6czpfEA++jg3UJuqFIZIyKTjKwJMp4iI5kLOUkslFazoCbPQNs3Z9wIAHOivjDZP5eCj2VOESeNzTYKjnjLGZ4K8ZujHBASWTBlAImQF+SW1VEIA3+pLGgwzIA5xAHTHhLMWBUDJiq0IYC4pnO0TCsqCr4XCsUVLWWcs5bXmVh+I9J6qBnovZLHhN7brWASvGZojzmQrxdhjLe6xJgjQjbRCgIaPQKkyrmsWOrUGHO2IuiAX5ZAYeQFhnGFYiMnhI5OJ+fUkysD2qeWF5UECOrBKQ2q10GMowgDLFjmGfj+A41x+cPHH5Qz6oDB9VAn2gDptVfJ8UwEuBUJCIkAHP60QVUouAGg4oxgAI4aAUNOcz8DoVWbhZShFQCQHSxlgAdgACxfmVmCATLAhPEq-lWMTc5pMG0Y3LBTbGlMqewmCdTHH+OUaJVAPl6Tt4KuyTZozKrOZopKbAjz-KRPAZ86BvJRjvFluOhW7uKaAk1u6XWyhZgZOq2CMF1L7GdpOVU1lz5CMnK5a9NFvSbWvIddCl19pPXa0bQGwbQ20BXmEBeqxrD+3b6Ee2I7FCMAGAMBOy9BuJcRDqZO9KPubZIvFSTt7ID2lq4PZ7CBwBr3lz1y7g+QVvmgennNba+7TqnE2srj9yH81ZXSpyf7P7C5kfAJB59kQS34bt2Otj1b4V0e-ax13G6xzTmJmGegPwCAYA9CwGEL4oFsMime89D5XhRtKYoOkFEGUoBHYF+kUQtNIu00dCNWD7h4Nnpvqh9sxaiQ30lpFyo2JF1wGXR6enjPmcsFZwcUCCJuPTZy9Q97+WROwSpHOjrpDbzXVQyrBAcHT0Ij11emiqHtOPvuPp2mb7k6fvTT+90-735efJ8YAHodmsQagzBw9Cvve+5Q9sND0Bp6KCeEOEAWF8prifiListY1W1kdbDLik4q-KBr31aNk4mB6HWlQnYd0C+KBkggHZWHOhPN6NzwjmXHvTbI9Qm+D6CR95kE2hwvei8oJPuR23gagR0axMjIbYBmMvJX-3wf6Wn6Tcn283jmmZ8-Dn4X0ADfq+hIi3l7B9vObicDpSqTz4u8e7ijAHkyP3nyHDAVPy8GU3Pwn2EGyz41v1uWP0Xw9Q7x9Vf3mztxJU-2dx-y-ESyAA
 
 
+## Let's make this more generic 
 
+The solution we've just implemented is nice, but it's suitable for just the one set of events we've declared. 
+
+What if we were trying to write an open source library where people could define their own events? 
+
+
+Well we can do it the following way: 
+
+First, we define our EventNameToPayloadMap as just something Abstract: 
+
+```typescript
+type AbstractEventNameToPayloadMap = {
+    [key: string]: unknown; 
+}
+```
+
+Next we can define our other types just like we did before: 
+
+```typescript
+
+type AbstractPossibleEventTypes<T extends AbstractEventNameToPayloadMap> = keyof T & string; 
+type AbstractPossibleEventPayloads<T extends AbstractEventNameToPayloadMap> = T[AbstractPossibleEventTypes<T>]; 
+
+
+type AbstractDefaultPayloadGenerators<T extends AbstractEventNameToPayloadMap> = {
+    [key in keyof T]: () => T[key]; 
+}
+```
+
+
+Our generate payload function is similar, except now we pass in an object that does payload generators: 
+
+```typescript
+type AbstractEventNameToPayloadMap = {
+    [key: string]: unknown; 
+}
+
+type AbstractPossibleEventTypes<T extends AbstractEventNameToPayloadMap> = keyof T & string; 
+type AbstractPossibleEventPayloads<T extends AbstractEventNameToPayloadMap> = T[AbstractPossibleEventTypes<T>]; 
+
+
+type AbstractEvent<T extends AbstractEventNameToPayloadMap> = {
+    eventType: AbstractPossibleEventTypes<T>; 
+    payload: AbstractPossibleEventPayloads<T>; 
+}
+
+type EventPayloadProcessors<T extends AbstractEventNameToPayloadMap> = {
+    [K in keyof T]: (data: T[K]) => void; 
+}
+
+
+const myPayloadProcessors = {
+    "alpha": (value: {
+        favouriteColor: string
+    }) => {
+        console.log(value);
+    }, 
+
+    "beta": (value: {
+        value: number
+    }) => {
+        console.log(value);
+    }
+}
+
+
+function processEvents<T extends AbstractEventNameToPayloadMap> (pyaloadProcessors: EventPayloadProcessors<T>, events: Array<AbstractEvent<T>>) {
+
+    events.forEach((event) => {
+        const processor = pyaloadProcessors[event.eventType]; 
+        processor(event.payload);
+    }); 
+}
+
+
+
+function processSingleEvent<T extends AbstractEventNameToPayloadMap> (pyaloadProcessors: EventPayloadProcessors<T>, event: AbstractEvent<T>)  {
+    const processor = pyaloadProcessors[event.eventType]; 
+
+    processor(event.payload);
+}
+
+
+processSingleEvent(myPayloadProcessors,     {
+        eventType: "alpha", 
+        payload: {
+            favouriteColor: "red"
+        }
+    });
+
+
+
+processSingleEvent(myPayloadProcessors,     {
+        eventType: "alpha", 
+        payload: {
+
+            //@ts-expect-error
+            favouriteColor: 999
+        }
+    });
+
+processEvents(myPayloadProcessors, [
+    {
+        eventType: "alpha", 
+        payload: {
+            favouriteColor: "red"
+        }
+    },
+      {
+        eventType: "beta", 
+        payload: {
+            value: 999
+        }
+    },
+      {
+        eventType: "alpha", 
+        payload: {
+            
+            //@ts-expect-error - we're not getting an error here! why not? 
+            // No intellisense either
+            value: 999
+        }
+    },
+      {
+        //@ts-expect-error - it will error on garbage event types
+        eventType: "asdasd", 
+        payload: {
+            value: 999
+        }
+    },
+          {
+        eventType: "alpha", 
+        payload: {
+            //@ts-expect-error - it will error completely unrecgnised event payloads
+            foo: "bar"
+        }
+    }
+])
+```
+
+Now before we talk about the error (or lack of) that we're getting here, you might note that, it looks like we're repeating our selves a bit. 
+
+That is, we're explicitly stating the shapes of the event payloads here when we create the event processors - when technically already know the shapes of the payloads, from when we declared the default payload generators. 
+
+This is something we can tidy up, we'd do it by having one object that contains all of the 'generateDefaultPayload' 'proccessEvent' and anything functions we might create. 
+
+But for the purpose of this exercise it's easier to keep things seperate. 
+
+So the problem we've got is that for some reason when we start referring to an array of events, it loses synchronization of the event type to the event payload. 
+
+Let's take a closer look at what's happening here: 
+
+
+
+
+
+
+
+## Resources
+
+https://stackoverflow.com/questions/69534672/why-does-indexing-into-a-mapped-type-keep-the-type-narrow
+
+https://stackoverflow.com/questions/64744734/typescript-keyof-index-type-is-too-wide
