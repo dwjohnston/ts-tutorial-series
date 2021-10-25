@@ -1,0 +1,10 @@
+{
+  "name": "lesson-8-advanced-mapped-types-and-discriminated-unions",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^16.11.1",
+    "typescript": "^4.4.4"
+  }
+}

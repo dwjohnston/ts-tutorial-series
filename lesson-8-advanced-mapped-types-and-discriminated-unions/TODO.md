@@ -5,3 +5,6 @@
 
 - Assess terminology
 - remove 'abstract'
+
+
+What does 'discriminate' mean in TypeScript? 
