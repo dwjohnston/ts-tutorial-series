@@ -11,3 +11,9 @@ https://github.com/microsoft/TypeScript/issues/21760
 
 ## Errors aren't typed / No checked exceptions. 
 
+
+
+## This issue with function overloading: 
+
+https://www.typescriptlang.org/play?#code/FDBmFcDsGMBcEsD2kAEBbAngMSnJkAKAQwC4UBnWAJ3kgHMAaFAIzMnDWYFMqBtAXQCUKMtXBcA3CjC4EydNln5iZSjXpNhZUEQA25SdIgw5qTDhPLSFarUYsA-Gw7c+-FFpRiuKAD4odfS4AbxBgFAiUeFAUAmZBUMiklCouWHAqVG8pcMiAX1yIriCUROSI1PTMgL0DHKSCvOkw4GhkShQiES8qcRQAXgULPGQCACIiMaZeAEYGACYhHLbIDuZuwIMBoaVRibHBHPCZS3lEWAALHmHTAgA3B272Th4BYVDCndPCfaY7w+ABTCQA
+
