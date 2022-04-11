@@ -17,3 +17,9 @@ https://github.com/microsoft/TypeScript/issues/21760
 
 https://www.typescriptlang.org/play?#code/FDBmFcDsGMBcEsD2kAEBbAngMSnJkAKAQwC4UBnWAJ3kgHMAaFAIzMnDWYFMqBtAXQCUKMtXBcA3CjC4EydNln5iZSjXpNhZUEQA25SdIgw5qTDhPLSFarUYsA-Gw7c+-FFpRiuKAD4odfS4AbxBgFAiUeFAUAmZBUMiklCouWHAqVG8pcMiAX1yIriCUROSI1PTMgL0DHKSCvOkw4GhkShQiES8qcRQAXgULPGQCACIiMaZeAEYGACYhHLbIDuZuwIMBoaVRibHBHPCZS3lEWAALHmHTAgA3B272Th4BYVDCndPCfaY7w+ABTCQA
 
+## Interface keyword doesn't play nicely with records
+
+https://www.typescriptlang.org/play?#code/C4TwDgpgBAglC8UDeAoKUBmB7LAuKAzsAE4CWAdgOYDcUaUARgIbH7kCuAtgxMbSgF8UKCsF4YmAY2gAhdKnTY8hEhRp10zVlA7de-AXRQZ25ScFJZyUdgQgEAShElZiAEwAUGfE5fuAPERkVAA0NuQA1uRYAO7kAHwAlMjCQsIoLuREUEz4cIgKmDj4AERMJWH0WvgAnIL8GVbZDPhyBfS
+
+https://stackoverflow.com/questions/37006008/typescript-index-signature-is-missing-in-type
+
