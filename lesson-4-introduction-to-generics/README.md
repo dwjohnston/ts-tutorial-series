@@ -150,7 +150,7 @@ const d = mySecondGenericFunction(c); //const d: string
 
 Here, this function's value parameter has the same type as the functions return value. Not the same _value_ but the same _type_!
 
-**Nb.** Note that we mean that they have the same _type_ not the same _value_. They can't be different values of the same type!
+**Nb.** Note that we mean that they have the same _type_ not the same _value_. They can be different values of the same type!
 
 Another example: 
 
