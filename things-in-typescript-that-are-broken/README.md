@@ -23,3 +23,10 @@ https://www.typescriptlang.org/play?#code/C4TwDgpgBAglC8UDeAoKUBmB7LAuKAzsAE4CWA
 
 https://stackoverflow.com/questions/37006008/typescript-index-signature-is-missing-in-type
 
+
+## TypeScript not narrowing types when it comes to JSX
+
+https://www.typescriptlang.org/play?ssl=23&ssc=6&pln=24&pc=1#code/JYWwDg9gTgLgBAJQKYEMDG8BmUIjgIilQ3wG4AocmATzCTgFlqAFHMAZzgF44BvcuILgwAFkgAqI4ADsA5gH4AXHHYwoM2aTiUhcYOwCiAE2AwGEI0mUAjCBAA2qaVvIBfSpgCu0jMAjS4AElpaSQoAGFcSFDpeDgACjA2dmVeVShldI1XAEo+SnIiGE8oAIAeEwA3AD5tXiSIDgA6dPcygHoq6rcPb19-RhQZROTlJlZG9jz+ASE0f1VeUQkpOQAaPUMTMwskV244Bo4XWcFgTHiAQmXJDTgAMnvN41NzS2nT3WERHAB3OFC-wMUBwUHi+HwOQouncnyKJXK3S+Ql4+heO0sDyeZWCoQiUX8SFiKjU3CWYluclc7Wq7l0HW6riAA
+
+
+
