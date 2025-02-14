@@ -39,7 +39,7 @@ Change `target` to `es5` and `modules` to `commonjs` and then run `yarn build:1`
 
 In the same vein as configuring the format of the code that TypeScript is going to compile to, TypeScript also needs to know what features of EcmaScript it is using. 
 
-(Btw, what's the difference between EcmaScript and JavaScript - basically the same thing - as a convention I use the term 'EcmaScript' when referring to feature proposals etc, as that's the term they use)
+(Btw, what's the difference between EcmaScript and JavaScript? Basically the same thing - as a convention I use the term 'EcmaScript' when referring to feature proposals etc, as that's the term they use)
 
 Basically JavaScript is not an unchanging language - it is constantly being updated with new features, and those exist in a different state of lifestyle from proposed to adopted etc. 
 
