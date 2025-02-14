@@ -4,19 +4,9 @@
 
 The purpose of TypeScript is to add static typing to JavaScript.
 
-TypeScript is a (pre?) language. 
+Functionally, *TypeScript is just JavaScript*  - TypeScript can't do anything that JavaScript can't do. All TypeScript can really do is give you errors before runtime. 
 
-ie. TypeScript isn't a language that runs by itself. It compiles down to JavaScript, and it is the JavaScript that runs. 
-
-Exceptions (kinda): 
-
-- ts-node
-- webpack dev server with TS loaders
-- deno
-
-*TypeScript is just JavaScript*  - Functionally - TypeScript can't do anything that JavaScript can't do. All TypeScript can do is give you errors before runtine. 
-
-Syntatically TypeScript is a superset of JavaScript - ie. all valid JavaScript is valid TypeScript, but not all TypeScript is a valid JavaScript. 
+Syntatically, TypeScript is a superset of JavaScript - ie. all valid JavaScript is valid TypeScript, but not all TypeScript is a valid JavaScript. 
 
 ## 1.1 TypeScript compiles to JavaScript. 
 
